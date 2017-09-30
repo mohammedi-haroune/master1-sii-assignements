@@ -5,6 +5,7 @@
 
 \begin{document}
 \def\reportnumber{1}
+\def\reporttitle{Création et manipulation d'une BD}
 \input{../../TP0/front_page}
 \section{Création des tablespaces et des utilusateurs}
 \subsection{Créer deux TableSpaces \texttt{INTERVENTION\_TBS} et \texttt{INTERVENTION\_TempTBS}}
@@ -218,7 +219,7 @@ FAX
 \subsection{Ajouter la contrainte suivante : Date de début d’intervention doit être inferieur à la date de fin d’intervention}
 \subsubsection{Requête}
 \begin{sql}
-ALTER TABLE INTERVENTIONS ADD CHECK (DATEDEBINTERV < DATEFININTERV);
+ALTER TABLE INTERVENTIONS ADD CONSTRAINT CHK_DATEINTERV CHECK (DATEDEBINTERV < DATEFININTERV);
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
