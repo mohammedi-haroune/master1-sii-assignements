@@ -1,4 +1,4 @@
-%arara: pdflatex
+%arara : pdflatex
 \documentclass[•]{article}
 
 \usepackage{../../TP0/style}
@@ -228,15 +228,205 @@ Table altered.
 
 \section{Langage de manipulation de données}
 \subsection{Remplir toutes les tables par les instances représentées ci-dessus, quels sont les problèmes rencontrés.}
+\subsubsection{Requête}
+\begin{sql}
+INSERT INTO TABLENAME (SCHEMA) VALUES (VALUES);
+\end{sql}
+\subsubsection{Résultat}
+\begin{itemize}
+    \item Insertion sans problèmes
+    \begin{sql}
+    1 row created.
+    \end{sql}
+    \item le client n 23 ne peut pas etre nee li mois : 13 car inexistant
+    \begin{sql}
+    INSERT INTO CLIENT VALUES(23,'M','lamine','merabat',to_date('09/13/1965', 'DD/MM/YYYY'),'cite jeanne d arc ecran b2-gambetta-oran','0561724538','0561724538','')
+    ERROR at line 1:
+    ORA-01843: not a valid month
+    \end{sql}
+    \item Seule les valeurs \texttt{'MECANECIEN'} et \texttt{'ASSISTANT'} sont autorisés pour la collone \texttt{EMPLOYE.CATEGORIE}
+    \begin{sql}
+    INSERT INTO EMPLOYE VALUES(80,'lardjoune','karim','',25000)
+    ERROR at line 1:
+    ORA-01400: cannot insert NULL into ("DBAINTERVENTION"."EMPLOYE"."CATEGORIE") 
+    \end{sql}
+    \item Les vehicules 77 et 9 n'existe pas d'ou la violation d'integritee \texttt{FK\_INTERVENTIONS\_VEHICULE}
+    \begin{sql}
+    INSERT INTO VEHICULE VALUES (19,18,77,3904318515,'1985')
+    ERROR at line 1:
+    ORA-02291: integrity constraint (DBAINTERVENTION.FK_VEHICULE_MODELE) violated - parent key not found 
+    
+    INSERT INTO VEHICULE VALUES (24,80,9,1789519816,'1998')
+    ERROR at line 1:
+    ORA-02291: integrity constraint (DBAINTERVENTION.FK_VEHICULE_CLIENT) violated - parent key not found 
+    \end{sql}
+    \item Les employe 88 et 77 n'existe pas d'ou la violation d'integritee \texttt{FK\_INTERVENANT\_EMPLOYE}
+    \begin{sql}
+    INSERT INTO INTERVENTIONS VALUES (16,77,'reparation',to_date('2006-06-27 09:00:00','YYYY-MM-DD HH24:MI:SS'),to_date('2006-06-30 12:00:00','YYYY-MM-DD HH24:MI:SS'),25000))
+    ERROR at line 1:
+    ORA-02291: integrity constraint (DBAINTERVENTION.FK_INTERVENTIONS_VEHICULE) violated - parent key not found 
+    
+    INSERT INTO INTERVENANT VALUES (14,88,to_date('2006-05-07 14:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-10 18:00:00','YYYY-MM-DD HH24:MI:SS' ))
+    ERROR at line 1:
+    ORA-02291: integrity constraint (DBAINTERVENTION.FK_INTERVENANT_EMPLOYE) violated - parent key not found 
+    \end{sql}
+\end{itemize}
+
 \subsection{Supposons que le salaire de l’employé BADI Hatem est augmenté par 5000DA Que faut-il faire ?}
-\subsection{Pour les interventions de mois de Février, ajouter 5 cinq jours à la date de début. Désactiver la contrainte}
-pour autoriser la modification. Réactiver la contrainte.
+\subsubsection{Requête}
+\begin{sql}
+UPDATE EMPLOYE SET SALAIRE = SALAIRE + 5000 WHERE PRENOMEMP = 'badi' AND NOMEMP = 'hatem'    
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+1 rows updated.
+\end{sql}
+\subsection{Pour les interventions de mois de Février, ajouter 5 cinq jours à la date de début. Désactiver la contrainte pour autoriser la modification. Réactiver la contrainte.}
+\begin{enumerate}
+    \item Désactivation de la contraintes
+    \subsubsection{Requête}
+    \begin{sql}
+    ALTER TABLE INTERVENTIONS DISABLE CONSTRAINT CHK_DATEINTERV;
+    \end{sql}
+    \subsubsection{Résultat}
+    \begin{sql}
+    Table altered.
+    \end{sql}
+    \item Modification de la table
+    \subsubsection{Requête}
+    \begin{sql}
+    UPDATE INTERVENTIONS SET DATEDEBINTERV =  DATEDEBINTERV + 5 WHERE EXTRACT(MONTH FROM DATEDEBINTERV) = 2 OR EXTRACT(MONTH FROM DATEFININTERV) = 2 ;
+    \end{sql}
+    \subsubsection{Résultat}
+    \begin{sql}
+    4 rows updated.
+    \end{sql}
+    \item Réactivation de la contrainte
+    \subsubsection{Requête}
+    \begin{sql}
+    CREATE TABLE TABLEERREURS (ADRESSE ROWID, UTILISATEUR VARCHAR2(30), NOMTABLE VARCHAR2(30), NOMCONTRAINTE VARCHAR2(30));
+    ALTER TABLE INTERVENTIONS ENABLE CONSTRAINT CHK_DATEINTERV EXCEPTIONS INTO TABLEERREURS
+    \end{sql}
+    \subsubsection{Résultat}
+    \begin{sql}
+    ERROR at line 1:
+    ORA-02293: cannot validate (DBAINTERVENTION.CHK_DATEINTERV) - check constraint violated     
+\end{sql}
+On peut pas réactiver la contrainte à cause de violation par queluqes lignes
+\begin{sql}
+SELECT DATEDEBINTERV, DATEFININTERV FROM INTERVENTIONS WHERE DATEDEBINTERV >= DATEFININTERV;
+DATEDEBINTERV      DATEFININTERV
+------------------ ------------------
+07-MAR-06          26-FEB-06
+05-MAR-06          24-FEB-06
+04-MAR-06          25-FEB-06
+04-MAR-06          22-FEB-06
+\end{sql}
+\end{enumerate}
+
 \subsection{Supprimer toutes les véhicules de modèle Série 5. Quels sont les problèmes rencontrés.}
+\subsubsection{Requête}
+\begin{sql}
+DELETE VEHICULE WHERE NUMMODELE IN (SELECT NUMMODELE FROM MODELE WHERE MODELE = 'serie 5')
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+ERROR at line 1:
+ORA-02292: integrity constraint (DBAINTERVENTION.FK_INTERVENTIONS_VEHICULE) violated -
+child record found 
+\end{sql}
 \section{Langage d’interrogation de données}
 \subsection{Lister les modèles et leur marque.}
+\subsubsection{Requête}
+\begin{sql}
+SELECT MARQUE , MODELE FROM MARQUE MA, MODELE MO WHERE MA.NUMMARQUE = MO.NUMMARQUE;\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+    MARQUE                                   MODELE                                 
+    ---------------------------------------- ---------------------------------------
+    lamborghini                              diablo                                 
+    audi                                     série 5                                
+    alfa-romeo                               nsx                                    
+    mercedes                                 classe c                               
+    renault                                  safrane                                
+    venturi                                  400 gt                                 
+    lotus                                    esprit                                 
+    peugeot                                  605                                    
+    toyota                                   prévia                                 
+    ferrari                                  550 maranello                          
+    rolls-royce                              bentley-continental                    
+    alfa-romeo                               spider                                 
+    maserati                                 evoluzione                             
+    porsche                                  carrera                                
+    porsche                                  boxter                                 
+    volvo                                    s 80                                   
+    chrysler                                 300 m                                  
+    bmw                                      m 3                                    
+    jaguar                                   xj 8                                   
+    peugeot                                  406 coupé                              
+    venturi                                  300 atlantic                           
+    mercedes                                 classe e                               
+    lexus                                    gs 300                                 
+    cadilac                                  séville                                
+    saab                                     95 cabriolet                           
+    audi                                     tt coupé                               
+    ferrari                                  f 355                                  
+    
+    27 rows selected.
+\end{sql}
 \subsection{Lister les véhicules sur lesquels, il y a au moins une intervention.}
+\subsubsection{Requête}
+\begin{sql}
+SELECT V.* FROM VEHICULE V, INTERVENTIONS I WHERE I.NUMVEHICULE = V.NUMVEHICULE;
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+    NUMVEHICULE  NUMCLIENT  NUMMODELE   NUMIMMAT ANNE                               
+    ----------- ---------- ---------- ---------- ----                               
+              1          2          6   12519216 1992                               
+              1          2          6   12519216 1992                               
+              2          9         20  124219316 1993                               
+              3         17          8 1452318716 1987                               
+              6         20          6 3853319735 1997                               
+              8         16         14 8365318601 1986                               
+             10         20         22 9413119935 1999                               
+             14         22         21 7543119207 1992                               
+             17         12         11 4563117607 1976                               
+             20         22          2 1234319707 1997                               
+             20         22          2 1234319707 1997                               
+             21          3         19 8429318516 1985                               
+             22          8         19 1245619816 1998                               
+             25         13          5 1278919833 1998                               
+             28         10          3 1986219904 1999                               
+    
+    15 rows selected.
+\end{sql}
 \subsection{Quelle est la durée moyenne d’une intervention?}
+\subsubsection{Requête}
+\begin{sql}
+SELECT AVG(DATEFININTERV - DATEDEBINTERV) AS DUREE_MOYENNE FROM INTERVENTIONS;\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+    DUREE_MOYENNE                                                                   
+    -------------                                                                   
+       -.87222222                                                                       
+\end{sql}
 \subsection{Donner le montant global des interventions dont le coût d’intervention est supérieur à 30000 DA?}
+\subsubsection{Requête}
+\begin{sql}
+SELECT NUMVEHICULE, SUM(COUTINTERV) FROM INTERVENTIONS GROUP BY NUMVEHICULE HAVING SUM(COUTINTERV) > 30000;
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+    NUMVEHICULE SUM(COUTINTERV)                                                     
+    ----------- ---------------                                                     
+             25           42000                                                     
+              1           47000                                                     
+              6           40000                                                     
+             28           36000                                                     
+              2           45000                                                     
+             20           54000 
+\end{sql}
 
 
 \end{document}
