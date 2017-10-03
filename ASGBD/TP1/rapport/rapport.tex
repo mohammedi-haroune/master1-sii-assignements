@@ -146,9 +146,13 @@ Table altered.
 \end{sql}
 \subsection{Ajouter la contrainte not null pour les attributs \texttt{CATEGORIE}, \texttt{SALAIRE} de la relation \texttt{EMPLOYE}}
 \subsubsection{Requête}
-
+\begin{sql}
+AlTER TABLE EMPLOYE MODIFY CATEGORIE NOT NULL ;
+AlTER TABLE EMPLOYE MODIFY SALAIRE NOT NULL ;
+\end{sql}
 \subsubsection{Résultat}
 \begin{sql}
+Table altered.
 Table altered.
 \end{sql}
 \subsection{Modifier la longueur de l’attribut \texttt{PRENOMEMP} (agrandir, réduire)}
@@ -312,7 +316,7 @@ UPDATE EMPLOYE SET SALAIRE = SALAIRE + 5000 WHERE PRENOMEMP = 'badi' AND NOMEMP 
     ERROR at line 1:
     ORA-02293: cannot validate (DBAINTERVENTION.CHK_DATEINTERV) - check constraint violated     
 \end{sql}
-On peut pas réactiver la contrainte à cause de violation par queluqes lignes
+On ne peut pas réactiver la contrainte à cause d'une violation d'intégrité
 \begin{sql}
 SELECT DATEDEBINTERV, DATEFININTERV FROM INTERVENTIONS WHERE DATEDEBINTERV >= DATEFININTERV;
 DATEDEBINTERV      DATEFININTERV
@@ -324,7 +328,7 @@ DATEDEBINTERV      DATEFININTERV
 \end{sql}
 \end{enumerate}
 
-\subsection{Supprimer toutes les véhicules de modèle Série 5. Quels sont les problèmes rencontrés.}
+\subsection{Supprimer tous les véhicules de modèle Série 5. Quels sont les problèmes rencontrés.}
 \subsubsection{Requête}
 \begin{sql}
 DELETE VEHICULE WHERE NUMMODELE IN (SELECT NUMMODELE FROM MODELE WHERE MODELE = 'serie 5')
