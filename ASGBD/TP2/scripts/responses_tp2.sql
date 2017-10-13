@@ -157,9 +157,25 @@ de déroule normalement */
 	
 /** 12 **/
 /***********************************************************************************************/
-/*à faire*/
+
 /* montons que les privileges ont bien été retirés*/
 
+CONNECT Admin/Admin
+SELECT * FROM DBAINTERVENTION.EMPLOYE
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+UPDATE DBAINTERVENTION.EMPLOYE SET SALAIRE=0 WHERE SALAIRE > 1000;
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+SELECT * FROM DBAINTERVENTION.INTERVENANT
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+CREATE INDEX NOMEMP_IX ON DBAINTERVENTION.EMPLOYE(NOMEMP);
+ERROR at line 1:
+ORA-00942: table or view does not exist
 
 /** 13 **/
 /*la creation d'un profile permet la réstriction des ressources a un ustilisateur*/
@@ -191,7 +207,7 @@ PASSWORD_GRACE_TIME 5 ;
 /*a la creation d'un role on d'affecte un ensemble de privileges 
 puis se role peut etre affecté a plusieurs users */
 	
-	CREATE ROLE GESTIONNAIRE_DES_INTERVENTIONS IDENTIFIED BY ADMIN ;
+	CREATE ROLE GESTIONNAIRE_DES_INTERVENTIONS;
 	GRANT SELECT ON EMPLOYE TO GESTIONNAIRE_DES_INTERVENTIONS;
 	GRANT SELECT ON VEHICULE TO GESTIONNAIRE_DES_INTERVENTIONS;
 	GRANT SELECT ON CLIENT TO GESTIONNAIRE_DES_INTERVENTIONS;
@@ -202,16 +218,17 @@ puis se role peut etre affecté a plusieurs users */
  
  
  /** 16 **/
- 
- 
- 
- 
 	GRANT GESTIONNAIRE_DES_INTERVENTIONS TO Admin;
  
 
 /* vérification que les privileges transmis à l'Admin via le role 'GESTIONNAIRE_DES_INTERVENTIONS' fonctionnent*/ 
- 
- 
+CONNECT Admin/Admin
+SELECT COUNT(NUMEMPLOYE) FROM DBAINTERVENTION.EMPLOYE;
+SELECT COUNT(NUMVEHICULE) FROM DBAINTERVENTION.VEHICULE;
+SELECT COUNT(NUMCLIENT) FROM DBAINTERVENTION.CLIENT;
+UPDATE DBAINTERVENTION.INTERVENTIONS SET COUTINTERV=COUTINTERV+100;
+UPDATE DBAINTERVENTION.INTERVENANT SET DATEDEBUT=DATEDEBUT+2;
+
  
  
  
