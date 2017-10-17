@@ -39,7 +39,7 @@
 	double tab[14]={pow(10,6),2*pow(10,6),pow(10,7),2*pow(10,7),pow(10,8),2*pow(10,8),
 	pow(10,9),2*pow(10,9),pow(10,10),2*pow(10,10),pow(10,11),2*pow(10,11),pow(10,12),2*pow(10,12)};
 
-	printf("L'algorithme itératif avec boucle do .. while \n\n")
+	printf("L'algorithme itératif avec boucle do .. while \n\n");
 
 	for(j=0 ; j < 14 ; j++) {
 
