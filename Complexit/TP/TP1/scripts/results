@@ -1,0 +1,118 @@
+L'algorithme itératif avec boucle for 
+
+La somme S = 500000500000.000000 
+pour 1000000.000000 Iteration le programme prends 0.011177
+
+La somme S = 2000001000000.000000 
+pour 2000000.000000 Iteration le programme prends 0.006160
+
+La somme S = 50000005000000.000000 
+pour 10000000.000000 Iteration le programme prends 0.031110
+
+La somme S = 200000010000000.000000 
+pour 20000000.000000 Iteration le programme prends 0.061784
+
+La somme S = 5000000050000000.000000 
+pour 100000000.000000 Iteration le programme prends 0.308448
+
+La somme S = 20000000067108864.000000 
+pour 200000000.000000 Iteration le programme prends 0.615293
+
+La somme S = 500000000067108992.000000 
+pour 1000000000.000000 Iteration le programme prends 3.076619
+
+La somme S = 2000000000067113984.000000 
+pour 2000000000.000000 Iteration le programme prends 6.179196
+
+La somme S = 50000000000067862528.000000 
+pour 10000000000.000000 Iteration le programme prends 30.920366
+
+La somme S = 199999999999965659136.000000 
+pour 20000000000.000000 Iteration le programme prends 69.197337
+
+La somme S = 4999999999897965166592.000000 
+pour 100000000000.000000 Iteration le programme prends 314.129090
+
+La somme S = 19999999999290038550528.000000 
+pour 200000000000.000000 Iteration le programme prends 718.460152
+
+/*****************************************************************/
+
+L'algorithme itératif avec boucle while 
+
+La somme S = 500000500000.000000 
+pour 1000000.000000 Iteration le programme prends 0.003227
+
+La somme S = 2000001000000.000000 
+pour 2000000.000000 Iteration le programme prends 0.006472
+
+La somme S = 50000005000000.000000 
+pour 10000000.000000 Iteration le programme prends 0.032436
+
+La somme S = 200000010000000.000000 
+pour 20000000.000000 Iteration le programme prends 0.064657
+
+La somme S = 5000000050000000.000000 
+pour 100000000.000000 Iteration le programme prends 0.322734
+
+La somme S = 20000000067108864.000000 
+pour 200000000.000000 Iteration le programme prends 0.646398
+
+La somme S = 500000000067108992.000000 
+pour 1000000000.000000 Iteration le programme prends 3.228527
+
+La somme S = 2000000000067113984.000000 
+pour 2000000000.000000 Iteration le programme prends 6.456017
+
+La somme S = 50000000000067862528.000000 
+pour 10000000000.000000 Iteration le programme prends 32.271228
+
+La somme S = 199999999999965659136.000000 
+pour 20000000000.000000 Iteration le programme prends 67.204256
+
+La somme S = 4999999999897965166592.000000 
+pour 100000000000.000000 Iteration le programme prends 353.661353
+
+La somme S = 19999999999290038550528.000000 
+pour 200000000000.000000 Iteration le programme prends 709.004102
+
+/********************************************************************/
+
+L'algorithme itératif avec boucle do .. while 
+
+La somme S = 500000500000.000000 
+pour 1000000.000000 Iteration le programme prends 0.003294
+
+La somme S = 2000001000000.000000 
+pour 2000000.000000 Iteration le programme prends 0.006591
+
+La somme S = 50000005000000.000000 
+pour 10000000.000000 Iteration le programme prends 0.033344
+
+La somme S = 200000010000000.000000 
+pour 20000000.000000 Iteration le programme prends 0.066648
+
+La somme S = 5000000050000000.000000 
+pour 100000000.000000 Iteration le programme prends 0.341006
+
+La somme S = 20000000067108864.000000 
+pour 200000000.000000 Iteration le programme prends 0.692939
+
+La somme S = 500000000067108992.000000 
+pour 1000000000.000000 Iteration le programme prends 3.504640
+
+La somme S = 2000000000067113984.000000 
+pour 2000000000.000000 Iteration le programme prends 7.179120
+
+La somme S = 50000000000067862528.000000 
+pour 10000000000.000000 Iteration le programme prends 35.645556
+
+La somme S = 199999999999965659136.000000 
+pour 20000000000.000000 Iteration le programme prends 61.837564
+
+La somme S = 4999999999897965166592.000000 
+pour 100000000000.000000 Iteration le programme prends 317.164022
+
+La somme S = 19999999999290038550528.000000 
+pour 200000000000.000000 Iteration le programme prends 635.293616
+x

@@ -1,9 +1,9 @@
- 
+ /*
 #include<stdio.h>
 #include<stdlib.h>
 #include <time.h>
 #include <math.h>
-/*
+
  int main()
  {
  	double i,j,N,S;
@@ -35,10 +35,11 @@
     }
 	return 0;
  }
+
  */
 
 /**************************************************/
-/*
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -75,11 +76,10 @@
     }
 	return 0;
 }
-*/
 
  /***********************************************/
 
-
+/*
  #include<stdio.h>
  #include<stdlib.h>
 
@@ -109,4 +109,4 @@
     }
 	return 0;
  }
-
+*/
