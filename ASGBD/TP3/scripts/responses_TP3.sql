@@ -2,7 +2,7 @@
  
  /** 1**/
  
- SELECT * FROM DICT;
+ SELECT COUNT(*) FROM DICT;
  
  /** il contient n instance 
  
@@ -11,7 +11,7 @@
  
  /* le structure du cataloge DICT est : */
  
- DESC DICT;
+DESC DICT;
 /**
  Name                                      Null?    Type
  ----------------------------------------- -------- ------------------
@@ -21,10 +21,16 @@
 
  **/
  /** 2 **/
- 
+SELECT * FROM DICT 
+WHERE TABLE_NAME IN ('ALL_TAB_COLUMNS','USER_USERS', 'ALL_CONSTRAINTS', 'USER_TAB_PRIVS');
+
+DESC ALL_TAB_COLUMNS;
+DESC USER_USERS;
+DESC ALL_CONSTRAINTS;
+DESC USER_TAB_PRIVS;
  /** 3 **/
  
- DESC USER_USERS;
+DESC USER_USERS;
  
 /**
  Name                                      Null?    Type
@@ -46,13 +52,23 @@
  SELECT USERNAME FROM USER_USERS ; 
  
  /**
- USERNAME
+USERNAME
 ------------------------------
 SYSTEM
 
  **/
  /** 4 **/
- 
+DESC ALL_TAB_COLUMNS;
+DESC USER_TAB_COLUMNS;
+/*la structure des tables est presque le meme la suele difference c'est l'attribut OWNER dans la table ALL_TAB_COLUMNS*/
+SELECT COUNT(*) FROM ALL_TAB_COLUMNS;
+SELECT COUNT(*) FROM USER_TAB_COLUMNS;
+/*
+La table \texttt{ALL_TAB_COLUMNS} contient beaucoup de lignes par rapport à la table \texttt{USER_TAB_COLUMNS}
+ceci est justifier par le fait que cette denière contient que les information concernant les tables de l'utilisateur actualle 
+tandis que la première contient  les information de toutes tables que l'utlisateur a un acces
+*/
+
  /** 5 **/
  
  DESC ALL_TABLES;
@@ -145,8 +161,8 @@ INTERVENANT
  SELECT TABLE_NAME, TABLESPACE_NAME, OWNER FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION';
 
  /**
- TABLE_NAME                     TABLESPACE_NAME				OWNER 
- -------------------------------------------------------------------
+TABLE_NAME                     TABLESPACE_NAME				OWNER 
+-------------------------------------------------------------------
 
 CLIENT                         INTERVENTION_TBS				DBAINTERVENTION
 
@@ -167,7 +183,9 @@ INTERVENANT                    INTERVENTION_TBS				DBAINTERVENTION
 **/
  
  /** 6 **/ 
- 
+SELECT TABLE_NAME  FROM ALL_TABLES WHERE OWNER = 'SYSTEM' ;
+SELECT TABLE_NAME  FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION' ;
+//PAS DE RESULTATS
  /** 7 **/
  
  DESC USER_TAB_COLUMNS;
@@ -247,6 +265,25 @@ VEHICULE                        ANNEE                          Y		VARCHAR2	     
  
  
  /** 8 **/ 
+ /*1. chercher dans le dictionaire touts les tables qui contient le mot CONSTRAINTS*/
+ SELECT * FROM DICT WHERE TABLE_NAME LIKE '%CONSTRAINTS%'
+ /*
+ 2. à partir de la description des tables on extrait les noms des tables qui peuvent contenir l'information concerntant la containte demandé
+ dans ce cas : USER_CONSTRAINTS
+ */
+ /*
+ 3. afficher le chema de la table
+ */
+ DESC USER_CONSTRAINTS;
+ /*
+ 4. écriture de la reqûte qui vérifie l'existense du contrainte
+ */
+ SELECT *
+ FROM USER_CONSTRAINTS
+ WHERE CONSTRAINT_TYPE = 'R' AND TABLE_NAME = 'VEHICULE' OR TABLE_NAME = 'INTERVENTIONS';
+ /*
+
+ */
  
  /** 9 **/
  
@@ -310,7 +347,13 @@ CHK_DATEINTERV                 C INTERVENTIONS                  DISABLED
 **/
  
  /** 10 **/ 
- 
+ DESC INTERVENTIONS;
+ SELECT * FROM ALL_TABLES WHERE TABLE_NAME = 'INTERVENTIONS';
+ SELECT * FROM ALL_TAB_COLUMNS WHERE TABLE_NAME = 'INTERVENTIONS';
+ SELECT * FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'INTERVENTIONS';
+ SELECT * FROM ALL_INDEXES WHERE TABLE_NAME = 'INTERVENTIONS';
+ SELECT * FROM ALL_IND_COLUMNS WHERE TABLE_NAME = 'INTERVENTIONS';
+ SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'INTERVENTIONS' ;
  /** 11 **/
  
  DESC USER_TAB_PRIVS;
@@ -358,7 +401,7 @@ connect Admin/Admin;
 Connected.
 **/
 
-select granted_role from USER_ROLE_PRIVS;
+SELECT GRANTED_ROLE FROM USER_ROLE_PRIVS;
 
 /**
 GRANTED_ROLE
@@ -402,6 +445,9 @@ SYS_C007170
 MY_TABLE
 **/
 
+/** 14 **/
+SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'INTERVENTIONS';
+
  
 /** 15 **/ 
 
@@ -421,7 +467,7 @@ MY_TABLE
 **/
 
  
- SELECT BYTES/1024 AS Taille_Ko FROM USER_EXTENTS WHERE SEGMENT_NAME = 'INTERVENTIONS';
+SELECT BYTES/1024 AS Taille_Ko FROM USER_EXTENTS WHERE SEGMENT_NAME = 'INTERVENTIONS';
  
  /**
  
@@ -430,6 +476,9 @@ MY_TABLE
         64
  
  **/
+
+ /** 16 ***/
+ /** A faire **/
  
  
  
