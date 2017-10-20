@@ -10,7 +10,7 @@
 
 \subsection{Création de l'Admin}
 \textrm{Lors de la création de l'utilisateur Admin un mot de passe lui est aussi donné.}
-\textrm{Aussi un quota de la tablespace INTERVENTION\_TBS lui est affecté. }
+\textrm{Aussi un quota de la tablespace \texttt{INTERVENTION\_TBS} lui est affecté. }
 
 \subsubsection{Requête}
 \begin{sql}
@@ -59,8 +59,8 @@ Connected.
 \subsubsection{Requête}
 \begin{sql}
 connect DBAINTERVENTION/DBAINTERVENTION;
-	GRANT CREATE TABLE TO Admin;
-	GRANT CREATE USER TO Admin;
+GRANT CREATE TABLE TO Admin;
+GRANT CREATE USER TO Admin;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -74,12 +74,12 @@ Grant succeeded.
 \begin{sql}
 connect Admin/Admin;
 	
-	CREATE TABLE My_TABLE(
-	my_num INTEGER PRIMARY KEY,
-	my_name VARCHAR2(30)
-	);
+CREATE TABLE My_TABLE(
+my_num INTEGER PRIMARY KEY,
+my_name VARCHAR2(30)
+);
 	
-	CREATE USER USER0 IDENTIFIED BY USER0;
+CREATE USER USER0 IDENTIFIED BY USER0;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -112,18 +112,18 @@ d'ailleurs oracle n'avoue même pas l'existence de la table EMPLOYE}
 \subsubsection{Requête}
 \begin{sql}
 connect DBAINTERVENTION/DBAINTERVENTION;
-	GRANT SELECT ON EMPLOYE TO Admin;
+GRANT SELECT ON EMPLOYE TO Admin;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
 Connected.
 Grant succeeded.
 \end{sql}
-\textrm{Exécution de la requête "Select * from DBAINTERVENTION.EMPLOYE"}
+\textrm{Exécution de la requête \texttt{SELECT * FROM DBAINTERVENTION.EMPLOYE}}
 \subsubsection{Requête}
 \begin{sql}
 connect Admin/Admin;
-	Select * from DBAINTERVENTION.EMPLOYE ;
+SELECT * FROM DBAINTERVENTION.EMPLOYE ;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -209,8 +209,8 @@ ORA-00942: table or view does not exist
 \subsubsection{Requête}
 \begin{sql}
 connect DBAINTERVENTION/DBAINTERVENTION;
-	GRANT UPDATE ON EMPLOYE TO Admin;
-	GRANT SELECT ON INTERVENANT TO Admin;
+GRANT UPDATE ON EMPLOYE TO Admin;
+GRANT SELECT ON INTERVENANT TO Admin;
 \end{sql}
 
 \subsubsection{Résultat}
@@ -247,7 +247,7 @@ Connected.
 \textrm{Il n'y a aucun enregistrement qui correspond aux conditions de la requête.}
 
 
-\subsection{Création d'un index NOMEMP\_IX sur l’attribut NOMEMP de la table EMPLOYE.}
+\subsection{Création d'un index \texttt{NOMEMP\_IX} sur l’attribut NOMEMP de la table EMPLOYE.}
 \subsubsection{Requête}
 \begin{sql}
 CREATE INDEX NOMEMP_IX ON DBAINTERVENTION.EMPLOYE(NOMEMP);
@@ -268,7 +268,7 @@ Aussi vu que l'Admin possède déja des droits sur la table EMPLOYE, oracle reco
 \subsubsection{Requête}
 \begin{sql}
 connect DBAINTERVENTION/DBAINTERVENTION;
-	GRANT INDEX ON EMPLOYE TO Admin;
+GRANT INDEX ON EMPLOYE TO Admin;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -280,7 +280,7 @@ Grant succeeded.
 \subsubsection{Requête}
 \begin{sql}
 connect Admin/Admin;
-	CREATE INDEX NOMEMP_IX ON DBAINTERVENTION.EMPLOYE(NOMEMP);
+CREATE INDEX NOMEMP_IX ON DBAINTERVENTION.EMPLOYE(NOMEMP);
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -294,15 +294,15 @@ Index created.
 \textrm{L'utilisateur DBAINTERVENTION doit connaitre les privilèges accordés et sur quelles tables afin de pouvoir les retirer.}
 \subsubsection{Requête}
 \begin{sql}
-connect DBAINTERVENTION/DBAINTERVENTION;
-	REVOKE SELECT ON EMPLOYE FROM Admin;
-	REVOKE UPDATE ON EMPLOYE FROM Admin;
-	REVOKE SELECT ON INTERVENANT FROM Admin;
-	REVOKE INDEX ON EMPLOYE FROM Admin;
+CONNECT DBAINTERVENTION/DBAINTERVENTION;
+REVOKE SELECT ON EMPLOYE FROM Admin;
+REVOKE UPDATE ON EMPLOYE FROM Admin;
+REVOKE SELECT ON INTERVENANT FROM Admin;
+REVOKE INDEX ON EMPLOYE FROM Admin;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
-Connected.
+Connected.	
 
 Revoke succeeded.
 Revoke succeeded.
@@ -315,11 +315,22 @@ Revoke succeeded.
 \textrm{La vérification que les privilèges précédemment supprimés le sont bien, nous prendrons un exemple de test pour chaque privilège supprimé.}
 \subsubsection{Requête}
 \begin{sql}
-
+CONNECT Admin/Admin
+SELECT * FROM EMPLOYE
+UPDATE EMPLOYE SET SALAIRE=0 WHERE SALAIRE > 1000;
+SELECT * FROM INTERVENANT
+CREATE INDEX NOMEMP_IX ON DBAINTERVENTION.EMPLOYE(NOMEMP);
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
-
+ERROR at line 1:
+ORA-00942: table or view does not exist
+ERROR at line 1:
+ORA-00942: table or view does not exist
+ERROR at line 1:
+ORA-00942: table or view does not exist
+ERROR at line 1:
+ORA-00942: table or view does not exist
 \end{sql}
 
 
@@ -371,13 +382,12 @@ User altered.
 \subsubsection{Requête}
 
 \begin{sql}
-CREATE ROLE GESTIONNAIRE_DES_INTERVENTIONS IDENTIFIED BY ADMIN ;
-	GRANT SELECT ON EMPLOYE TO GESTIONNAIRE_DES_INTERVENTIONS;
-	GRANT SELECT ON VEHICULE TO GESTIONNAIRE_DES_INTERVENTIONS;
-	GRANT SELECT ON CLIENT TO GESTIONNAIRE_DES_INTERVENTIONS;
-
-	GRANT UPDATE ON INTERVENTIONS TO GESTIONNAIRE_DES_INTERVENTIONS;
-	GRANT UPDATE ON INTERVENANT TO GESTIONNAIRE_DES_INTERVENTIONS;
+CREATE ROLE GESTIONNAIRE_DES_INTERVENTIONS IDENTIFIED;
+GRANT SELECT ON EMPLOYE TO GESTIONNAIRE_DES_INTERVENTIONS;
+GRANT SELECT ON VEHICULE TO GESTIONNAIRE_DES_INTERVENTIONS;
+GRANT SELECT ON CLIENT TO GESTIONNAIRE_DES_INTERVENTIONS;
+GRANT UPDATE ON INTERVENTIONS TO GESTIONNAIRE_DES_INTERVENTIONS;
+GRANT UPDATE ON INTERVENANT TO GESTIONNAIRE_DES_INTERVENTIONS;
 \end{sql}
 
 \subsubsection{Résultat}
@@ -407,13 +417,29 @@ Grant succeeded.
 \textrm{Vérifier que le rôle est transmis à l'Admin via une série de test suivant les privilèges accordés au rôle.}
 \subsubsection{Requête}
 \begin{sql}
-
+SELECT COUNT(NUMEMPLOYE) FROM DBAINTERVENTION.EMPLOYE;
+SELECT COUNT(NUMVEHICULE) FROM DBAINTERVENTION.VEHICULE;
+SELECT COUNT(NUMCLIENT) FROM DBAINTERVENTION.CLIENT;
+UPDATE DBAINTERVENTION.INTERVENTIONS SET COUTINTERV=COUTINTERV+100;
+UPDATE DBAINTERVENTION.INTERVENANT SET DATEDEBUT=DATEDEBUT+2;
+	
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
-
+COUNT(NUMEMPLOYE)
+-----------------
+			   20
+COUNT(NUMVEHICULE)
+-----------------
+				26
+COUNT(NUMCLIENT)
+----------------
+			  22
+15 rows updated.
+26 rows updated.
+			  
 \end{sql}
 
-\textrm{Confirmation que les privilèges transmis à l'Admin via le role 'GESTIONNAIRE\_DES\_INTERVENTIONS' fonctionnent correctement.}
+\textrm{les résultats de ces reqêtes confirme que les privilèges transmis à l'Admin via le role 'GESTIONNAIRE\_DES\_INTERVENTIONS' fonctionnent correctement.}
 
 \end{document}
