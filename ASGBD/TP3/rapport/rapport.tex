@@ -8,35 +8,37 @@
 \def\reporttitle{Dictionnaire Oracle}
 \input{../../TP0/front_page}
 
-\subsection{Connecter en tant que « System ». Lister le catalogue « DICT ». Il contient combien d’instances. Donner sa
-structure}
+\subsection{Connexion en tant que « System ». Lister le catalogue « DICT » et affichage du nombre d’instances qu'il contient ainsi que sa structure.}
 
 \subsubsection{Requête}
 \begin{sql}
 CONNECT SYSTEM/oracle
 SELECT COUNT(*) AS NBR FROM DICT;
 DESC DICT;
-
 \end{sql}
+
 \subsubsection{Résultat}
 \begin{sql}
        NBR
 ----------
       2551
 
-Name                                      Null?    Type
------------------------------------------ -------- ------------------
-TABLE_NAME                                         VARCHAR2(30)
-COMMENTS                                           VARCHAR2(4000)
+Name                                    Null?    Type
+--------------------------------------- -------- ------------------
+TABLE_NAME                                       VARCHAR2(30)
+COMMENTS                                         VARCHAR2(4000)
+
 \end{sql}
+On remarque que la table «DICT» est composée de deux (2) colonnes seulement qui sont le nom des tables qui est une chaine de caractère de taille = 30 et de leur description qui est aussi une chaine de caractère de taille = 4000.
 
-
-\subsection{Donner le rôle et la structure des tables (ou vues) suivantes : \texttt{ALL\_TAB\_COLUMNS},
+\subsection{Rôle et structure des tables (ou vues) suivantes : \texttt{ALL\_TAB\_COLUMNS},
 \texttt{USER\_USERS}, \texttt{ALL\_CONSTRAINTS} et \texttt{USER\_TAB\_PRIVS}}
-pour donner le rôle d'une table on conslulte le dictionaire \texttt{DICT}, plus précesement sa colone \texttt{COMMENTS}
+Afin de connaitre le rôle d'une table on consulte le dictionnaire \texttt{DICT}, plus précisément la colonne \texttt{COMMENTS}
+
 \subsubsection{Requête}
 \begin{sql}
-SELECT * FROM DICT 
+SELECT * 
+FROM DICT 
 WHERE TABLE\_NAME IN ('ALL\_TAB\_COLUMNS','USER\_USERS', 'ALL\_CONSTRAINTS', 'USER\_TAB\_PRIVS');
 \end{sql}
 \subsubsection{Résultat}
@@ -44,24 +46,60 @@ WHERE TABLE\_NAME IN ('ALL\_TAB\_COLUMNS','USER\_USERS', 'ALL\_CONSTRAINTS', 'US
 TABLE_NAME		       COMMENTS
 ------------------------------ -------------------------------------------------
 ALL_CONSTRAINTS 	       Constraint definitions on accessible tables
-ALL_TAB_COLUMNS 	       Columns of user's tables, views and clusters
+ALL_TAB_COLUMNS 	       Columns of user s tables, views and clusters
 USER_TAB_PRIVS		       Grants on objects for which the user is the owner
 USER_USERS		       	   Information about the current user
 \end{sql}
-\subsection{Trouver le nom d’utilisateur avec lequel vous êtes connecté}
 
-Pour trouver le nom de l'utilisateur il faut consulter la table \texttt{USER\_USERS} et il faut tout d'abord afficher son schema avec la command \texttt{DESC} et après on cosulute la table pour nous donner le nom de l'utlisateur
-
+Puis la description de la structure de chaque table se fait via la commande \texttt{DESC}.
 \subsubsection{Requête}
 \begin{sql}
-DESC USER\_USERS;
-SELECT USERNAME FROM USER\_USERS; 
+DESC ALL_TAB_COLUMNS;
+DESC USER_USERS;
+DESC ALL_CONSTRAINTS;
+DESC USER_TAB_PRIVS;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
+SQL> DESC ALL_TAB_COLUMNS; 
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ---------------
+
+ OWNER                                     NOT NULL VARCHAR2(30)
+ TABLE_NAME                                NOT NULL VARCHAR2(30)
+ COLUMN_NAME                               NOT NULL VARCHAR2(30)
+ DATA_TYPE                                          VARCHAR2(106)
+ DATA_TYPE_MOD                                      VARCHAR2(3)
+ DATA_TYPE_OWNER                                    VARCHAR2(120)
+ DATA_LENGTH                               NOT NULL NUMBER
+ DATA_PRECISION                                     NUMBER
+ DATA_SCALE                                         NUMBER
+ NULLABLE                                           VARCHAR2(1)
+ COLUMN_ID                                          NUMBER
+ DEFAULT_LENGTH                                     NUMBER
+ DATA_DEFAULT                                       LONG
+ NUM_DISTINCT                                       NUMBER
+ LOW_VALUE                                          RAW(32)
+ HIGH_VALUE                                         RAW(32)
+ DENSITY                                            NUMBER
+ NUM_NULLS                                          NUMBER
+ NUM_BUCKETS                                        NUMBER
+ LAST_ANALYZED                                      DATE
+ SAMPLE_SIZE                                        NUMBER
+ CHARACTER_SET_NAME                                 VARCHAR2(44)
+ CHAR_COL_DECL_LENGTH                               NUMBER
+ GLOBAL_STATS                                       VARCHAR2(3)
+ USER_STATS                                         VARCHAR2(3)
+ AVG_COL_LEN                                        NUMBER
+ CHAR_LENGTH                                        NUMBER
+ CHAR_USED                                          VARCHAR2(1)
+ V80_FMT_IMAGE                                      VARCHAR2(3)
+ DATA_UPGRADED                                      VARCHAR2(3)
+ HISTOGRAM                                          VARCHAR2(15)
+
+SQL> DESC USER_USERS;
  Name                                      Null?    Type
  ----------------------------------------- -------- -----------------
-
  USERNAME                                  NOT NULL VARCHAR2(30)
  USER_ID                                   NOT NULL NUMBER
  ACCOUNT_STATUS                            NOT NULL VARCHAR2(32)
@@ -73,22 +111,80 @@ SELECT USERNAME FROM USER\_USERS;
  INITIAL_RSRC_CONSUMER_GROUP                        VARCHAR2(30)
  EXTERNAL_NAME                                      VARCHAR2(4000)
 
+
+SQL> DESC ALL_CONSTRAINTS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------
+
+ OWNER                                              VARCHAR2(120)
+ CONSTRAINT_NAME                           NOT NULL VARCHAR2(30)
+ CONSTRAINT_TYPE                                    VARCHAR2(1)
+ TABLE_NAME                                NOT NULL VARCHAR2(30)
+ SEARCH_CONDITION                                   LONG
+ R_OWNER                                            VARCHAR2(120)
+ R_CONSTRAINT_NAME                                  VARCHAR2(30)
+ DELETE_RULE                                        VARCHAR2(9)
+ STATUS                                             VARCHAR2(8)
+ DEFERRABLE                                         VARCHAR2(14)
+ DEFERRED                                           VARCHAR2(9)
+ VALIDATED                                          VARCHAR2(13)
+ GENERATED                                          VARCHAR2(14)
+ BAD                                                VARCHAR2(3)
+ RELY                                               VARCHAR2(4)
+ LAST_CHANGE                                        DATE
+ INDEX_OWNER                                        VARCHAR2(30)
+ INDEX_NAME                                         VARCHAR2(30)
+ INVALID                                            VARCHAR2(7)
+ VIEW_RELATED                                       VARCHAR2(14)
+ 
+ 
+SQL> DESC USER_TAB_PRIVS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- --------------------
+ GRANTEE                                   NOT NULL VARCHAR2(30)
+ OWNER                                     NOT NULL VARCHAR2(30)
+ TABLE_NAME                                NOT NULL VARCHAR2(30)
+ GRANTOR                                   NOT NULL VARCHAR2(30)
+ PRIVILEGE                                 NOT NULL VARCHAR2(40)
+ GRANTABLE                                          VARCHAR2(3)
+ HIERARCHY                                          VARCHAR2(3)
+\end{sql}
+
+
+
+\subsection{Afficher le nom d'utilisateur avec lequel nous sommes connectés}
+
+Cette information peut être récupérée à partir de la table \texttt{USER\_USERS} dont nous avons précédemment affiché la structure; Ainsi nous constatons que la colonne qui nous intéresse est \texttt{USERNAME}, se qui nous permet de l'afficher maintenant:
+
+\subsubsection{Requête}
+\begin{sql}
+SELECT USERNAME FROM USER_USERS; 
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
  USERNAME
  ------------------------------
  SYSTEM
+ 
 \end{sql}
+Effectivement nous sommes connectés en tant que \texttt{SYSTEM}.
 
 %4
-\subsection{Comparer la structure et le contenu des tables \texttt{ALL\_TAB\_COLUMNS} et \texttt{USER\_TAB\_COLUMNS}}
+\subsection{Comparaison de la structure et le contenu des tables \texttt{ALL\_TAB\_COLUMNS} et \texttt{USER\_TAB\_COLUMNS}}
 \subsubsection{Requête}
 \begin{sql}
 DESC ALL_TAB_COLUMNS;
 DESC USER_TAB_COLUMNS;
-SELECT COUNT(*) AS NBR_ALL_TAB_COLUMNS FROM ALL_TAB_COLUMNS;
-SELECT COUNT(*) AS NBR_USER_TAB_COLUMNS FROM USER_TAB_COLUMNS;
+
+SELECT COUNT(*) AS NBR_ALL_TAB_COLUMNS 
+FROM ALL_TAB_COLUMNS;
+
+SELECT COUNT(*) AS NBR_USER_TAB_COLUMNS 
+FROM USER_TAB_COLUMNS;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
+SQL> DESC ALL_TAB_COLUMNS;
  Name                                      Null?    Type
  ----------------------------------------- -------- ----------------------------
  OWNER                                     NOT NULL VARCHAR2(30)
@@ -123,6 +219,7 @@ SELECT COUNT(*) AS NBR_USER_TAB_COLUMNS FROM USER_TAB_COLUMNS;
  DATA_UPGRADED                                      VARCHAR2(3)
  HISTOGRAM                                          VARCHAR2(15)
 
+SQL> DESC USER_TAB_COLUMNS;
  Name                                      Null?    Type
  ----------------------------------------- -------- ----------------------------
  TABLE_NAME                                NOT NULL VARCHAR2(30)
@@ -166,17 +263,22 @@ NBR_USER_TAB_COLUMNS
 --------------------                                                            
                 1684
 \end{sql}
-La structure des tables est presque le même, la suele difference c'est l'attribut \texttt{OWNER} dans la table \texttt{ALL\_TAB\_COLUMNS}
+La structure des tables est presque la même, la seule différence c'est l'attribut \texttt{OWNER} présent dans la table \texttt{ALL\_TAB\_COLUMNS} en plus.
 
-La table \texttt{ALL\_TAB\_COLUMNS} contient beaucoup de lignes par rapport à la table \texttt{USER\_TAB\_COLUMNS}
-ceci est justifier par le fait que cette denière contient que les information concernant les tables de l'utilisateur actualle 
-tandis que la première contient  les information de toutes tables que l'utlisateur a un acces
+Le nombre d'instance contenue dans la table \texttt{ALL\_TAB\_COLUMNS} est beaucoup plus important que celui dans la table \texttt{USER\_TAB\_COLUMNS}
+
+Sachant que la table \texttt{USER\_TAB\_COLUMNS} ne contient que les informations sur les colonnes des tables de l'utilisateur courant tandis que la table \texttt{ALL\_TAB\_COLUMNS} contient toutes les informations sur toutes les colonnes de tous les utilisateurs ayant un quota dans la tablespace (aux quelles l'utilisateur courant a accès).
+
+Ainsi le contenu de la table \texttt{USER\_TAB\_COLUMNS} est inclus dans la table \texttt{ALL\_TAB\_COLUMNS}.
 
 %5
-\subsection{Vérifiez que les tables du TP1 ont été réellement créées. Donner toutes les informations sur ces tables}
+\subsection{Vérification que les tables du TP1 ont été réellement créées puis affichage de toutes les informations sur ces tables.}
+Sachant que les tables du TP1 ont été crées par l'utilisateur \texttt{DBAINTERVENTION}, il nous suffit de récupérer les nom des tables crées par cet utilisateur.
 \subsubsection{Requête}
 \begin{sql}
-SELECT TABLE_NAME  FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION' ;
+SELECT TABLE_NAME 
+FROM ALL_TABLES 
+WHERE OWNER = 'DBAINTERVENTION' ;
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -192,58 +294,105 @@ INTERVENANT
 
 7 rows selected.
 \end{sql}
+
+Effectivement les tables ont toutes bien été crées lors du TP1.
+
 \subsubsection{Requête}
+\begin{sql}
+SELECT * 
+FROM ALL_TABLES 
+WHERE OWNER = 'DBAINTERVENTION';
+\end{sql}
+
+Vu que le nombre d'informations est très important nous allons afficher que 3 colonnes qui sont: le nom de la table , le nom de la tablespace dans la quelle les tables ont été crées et le nom du propriétaire de la table.
 
 \begin{sql}
-SELECT * FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION';
-\end{sql}
-Vu que le nombre d'infos est très important nous allons afficher que 3 colonnes qui sont: le nom de la table , le nom de la table space dans la quelle les tables ont été crées et le nom du proporiétaire de la table
-\begin{sql}
-SELECT TABLE_NAME, TABLESPACE_NAME, OWNER FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION';
+SELECT TABLE_NAME, TABLESPACE_NAME, OWNER 
+FROM ALL_TABLES 
+WHERE OWNER = 'DBAINTERVENTION';
 \end{sql}
 
 \subsubsection{Résultat}
 \begin{sql}
 TABLE_NAME                     TABLESPACE_NAME				OWNER 
 -------------------------------------------------------------------
-
 CLIENT                         INTERVENTION_TBS				DBAINTERVENTION
-
 EMPLOYE                        INTERVENTION_TBS				DBAINTERVENTION
-
 MARQUE                         INTERVENTION_TBS				DBAINTERVENTION
-
 MODELE                         INTERVENTION_TBS				DBAINTERVENTION
-
 VEHICULE                       INTERVENTION_TBS				DBAINTERVENTION
-
 INTERVENTIONS                  INTERVENTION_TBS				DBAINTERVENTION
-
 INTERVENANT                    INTERVENTION_TBS				DBAINTERVENTION
-
 
 7 rows selected.
 \end{sql}
 
 %6
-\subsection{Lister les tables de l’utilisateur \texttt{SYSTEM} et celles de l’utilisateur \texttt{DBAINTERVENTION}}
+\subsection{La liste des tables de l'utilisateur \texttt{SYSTEM} et celles de l'utilisateur \texttt{DBAINTERVENTION}}
 \subsubsection{Requête}
 \begin{sql}
 SELECT TABLE_NAME  FROM ALL_TABLES WHERE OWNER = 'SYSTEM' ;
-SELECT TABLE_NAME  FROM ALL_TABLES WHERE OWNER = 'DBAINTERVENTION' ;\end{sql}
+\end{sql}
+
+Le nombre de table étant très important (162) pour l'utilisateur \texttt{SYSTEM} nous allons afficher un extrait de 15 tables seulement.
+
 \subsubsection{Résultat}
 \begin{sql}
-PAS DE RESULTATS
+LOGSTDBY\$EDS_TABLES
+INTERVENTIONS
+INTERVENANT
+SQLPLUS_PRODUCT_PROFILE
+HELP
+CLIENT
+TABLEERREURS
+EMPLOYE
+MARQUE
+MODELE
+VEHICULE
+LOGMNR_GT_TAB_INCLUDE\$
+LOGMNR_GT_USER_INCLUDE\$
+LOGMNR_GT_XID_INCLUDE\$
+LOGMNRT_MDDL\$
+...
+
+162 rows selected.
 \end{sql}
-L'attribut \texttt{OWNER} dans la table \texttt{ALL\_TABLES} contient le nom de la créateur de la table concerné
+\textrm{ }
+\\
+puis les tables de l'utilisateur \texttt{DBAINTERVENTION}.
+\subsubsection{Requête}
+\begin{sql}
+SELECT TABLE_NAME  
+FROM ALL_TABLES 
+WHERE OWNER = 'DBAINTERVENTION' ;
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+TABLE_NAME
+------------------------------
+CLIENT
+EMPLOYE
+MARQUE
+MODELE
+VEHICULE
+INTERVENTIONS
+INTERVENANT
+
+7 rows selected.
+\end{sql}
+
+
+L'attribut \texttt{OWNER} dans la table \texttt{ALL\_TABLES} contient le nom du créateur de la table en question.
+
+On remarque que les tables de l'utilisateur \texttt{DBAINTERVENTION} sont incluses dans la liste des tables de l'utilisateur \texttt{SYSTEM}.
 
 %7
-\subsection{Donner la description des attributs des tables \texttt{VEHICULE} et \texttt{INTERVENTIONS}}
-Vu que la quantité d'infos est grande nous nous contenterons d'afficher uniquement 5 infos qui sont :
+\subsection{Affichage de la description des attributs des tables \texttt{VEHICULE} et \texttt{INTERVENTIONS}.}
+Nous devant d'abord prendre connaissance de la structure de la table \texttt{}.
 \subsubsection{Requête}
 \begin{sql}
 DESC USER_TAB_COLUMNS;
-SELECT * FROM USER_TAB_COLUMNS WHERE (TABLE_NAME = 'VEHICULE' OR TABLE_NAME = 'INTERVENTIONS');
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
@@ -280,51 +429,58 @@ SELECT * FROM USER_TAB_COLUMNS WHERE (TABLE_NAME = 'VEHICULE' OR TABLE_NAME = 'I
  V80_FMT_IMAGE                                      VARCHAR2(3)
  DATA_UPGRADED                                      VARCHAR2(3)
  HISTOGRAM                                          VARCHAR2(15)
+\end{sql}
 
- TABLE_NAME                     COLUMN_NAME                    N		DATA_TYPE		DATA_LENGTH
----------------------------------------------------------------------------------------------------
 
-INTERVENTIONS                   NUMINTERVENTION                N		NUMBER	         22
+Vu le grand nombre de colonne nous nous contenterons d'afficher uniquement cinq (5) d'entre elles, qui sont : le nom de la table, le nom de la colonne, si la valeur peut être NULL le type et la taille (en nombre de caractère).
 
-INTERVENTIONS                   NUMVEHICULE                    Y		NUMBER	         22
+\subsubsection{Requête}
+\begin{sql}
+ SELECT TABLE_NAME, COLUMN_NAME, NULLABLE, DATA_TYPE, DATA_LENGTH
+ FROM USER_TAB_COLUMNS 
+ WHERE (TABLE_NAME = 'VEHICULE' OR TABLE_NAME = 'INTERVENTIONS');
+\end{sql}
 
-INTERVENTIONS                   TYPEINTERVENTION               Y		VARCHAR2         40
-
-INTERVENTIONS                   DATEDEBINTERV                  Y		DATE	          7
-
-INTERVENTIONS                   DATEFININTERV                  Y		DATE	          7
-
-INTERVENTIONS                   COUTINTERV                     Y		FLOAT	         22
-
-VEHICULE                        NUMVEHICULE                    N		NUMBER	         22
-
-VEHICULE                        NUMCLIENT                      Y		NUMBER	         22
-
-VEHICULE                        NUMMODELE                      Y		NUMBER	         22
-
-VEHICULE                        NUMIMMAT                       Y		NUMBER	         22
-
-VEHICULE                        ANNEE                          Y		VARCHAR2	      4
-
+\subsubsection{Résultat}
+\begin{sql}
+ TABLE_NAME            COLUMN_NAME               N		DATA_TYPE		DATA_LENGTH
+-------------------------------------------------------------------------------------
+INTERVENTIONS          NUMINTERVENTION           N		NUMBER	         22
+INTERVENTIONS          NUMVEHICULE               Y		NUMBER	         22
+INTERVENTIONS          TYPEINTERVENTION          Y		VARCHAR2         40
+INTERVENTIONS          DATEDEBINTERV             Y		DATE	          7
+INTERVENTIONS          DATEFININTERV             Y		DATE	          7
+INTERVENTIONS          COUTINTERV                Y		FLOAT	         22
+VEHICULE               NUMVEHICULE               N		NUMBER	         22
+VEHICULE               NUMCLIENT                 Y		NUMBER	         22
+VEHICULE               NUMMODELE                 Y		NUMBER	         22
+VEHICULE               NUMIMMAT                  Y		NUMBER	         22
+VEHICULE               ANNEE                     Y		VARCHAR2	      4
 11 rows selected.
 \end{sql}
 
 %8
-\subsection{Comment peut-on vérifie qu’il y a une référence de clé étrangère entre les tables \texttt{VEHICULE} et
-\texttt{INTERVENTIONS}}
+\subsection{Vérification de l'existance d'une référence de clé étrangère entre les tables \texttt{VEHICULE} et \texttt{INTERVENTIONS}}
+
 \begin{enumerate}
-	\item Chercher dans le dictionaire touts les tables qui contient le mot \texttt{CONSTRAINTS}
+	\item Chercher dans le dictionnaire toutes les tables qui contiennent le mot \texttt{CONSTRAINTS}
 	\begin{sql}
-SELECT * FROM DICT WHERE TABLE_NAME LIKE '%CONSTRAINTS%';
+SELECT * 
+FROM DICT 
+WHERE TABLE_NAME LIKE '%CONSTRAINTS%';
+
 TABLE_NAME		       COMMENTS
 ------------------------------ -------------------------------------------------
 DBA_CONSTRAINTS 	       Constraint definitions on all tables
 ALL_CONSTRAINTS 	       Constraint definitions on accessible tables
-USER_CONSTRAINTS	       Constraint definitions on user's own tables
+USER_CONSTRAINTS	       Constraint definitions on user s own tables
 	\end{sql}
-	\item A partir de la description des tables on extrait les noms des tables qui peuvent contenir l'information concerntant la containte demandé, dans ce cas : \texttt{USER\_CONSTRAINTS} puis afficher son scheams
+	
+	\item A partir de la description des tables: Extraire les noms des tables qui peuvent contenir l'information concernant la contrainte demandée, dans ce cas : \texttt{USER\_CONSTRAINTS} puis afficher sa structure.
+	
 	\begin{sql}
 DESC USER_CONSTRAINTS;
+
  Name                                      Null?    Type
  ----------------------------------------- -------- ----------------------------
  OWNER                                              VARCHAR2(120)
@@ -348,48 +504,44 @@ DESC USER_CONSTRAINTS;
  INVALID                                            VARCHAR2(7)
  VIEW_RELATED                                       VARCHAR2(14)
 	\end{sql}
-	\item Ecriture de la reqûte qui vérifie l'existense du contrainte.
+	\item Écriture de la requête qui vérifie l'existence de la contrainte.
 	\begin{sql}
- SELECT *
+ SELECT CONSTRAINT_NAME
  FROM USER_CONSTRAINTS
  WHERE CONSTRAINT_TYPE = 'R' AND TABLE_NAME = 'VEHICULE' OR TABLE_NAME = 'INTERVENTIONS';
-PAS DE RESULTATS
+
+CONSTRAINT_NAME
+-----------------------------
+FK_VEHICULE_CLIENT
+FK_VEHICULE_MODELE
+PK_INTERVENTIONS
+FK_INTERVENTIONS_VEHICULE
+CHK_DATEINTERV
+
 	\end{sql}
 \end{enumerate}
 
+Effectivement il existe une référence de clé étrangère nommé : \texttt{FK\_INTERVENTIONS\_VEHICULE} entre les tables : \texttt{VEHICULE} et \texttt{INTERVENTIONS}. 
+
 %9
-\subsection{Donner toutes les contraintes créées lors du TP1 et les informations qui les caractérisent}
-En raison du nbr imporant d'info nous n'afficherons que les colonnes suivants: \texttt{CONSTRAINT\_NAME}, \texttt{CONSTRAINT\_TYPE}, \texttt{TABLE\_NAME} et \texttt{STATUS}
+\subsection{Affichage de toutes les contraintes créées lors du TP1 et les informations qui les caractérisent.}
+La structure de la table \texttt{USER\_CONSTRAINTS} ayant été déjà étudié nous pouvant directement passé a l'écriture de la requête: 
+
 \subsubsection{Requête}
 \begin{sql}
-DESC USER_CONSTRAINTS;
+SELECT  *  
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN ('EMPLOYE','VEHICULE','MARQUE','MODELE','INTERVENTIONS','INTERVENANT','CLIENT');
+\end{sql}
+
+En raison du grand volume d'information nous n'afficherons que les colonnes suivantes: \texttt{CONSTRAINT\_NAME}, \texttt{CONSTRAINT\_TYPE}, \texttt{TABLE\_NAME} et \texttt{STATUS}.
+
+\begin{sql}
 SELECT  CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, STATUS  FROM USER_CONSTRAINTS WHERE TABLE_NAME IN ('EMPLOYE','VEHICULE','MARQUE','MODELE','INTERVENTIONS','INTERVENANT','CLIENT');
 \end{sql}
+
 \subsubsection{Résultat}
 \begin{sql}
-  Name                                      Null?    Type
- ----------------------------------------- -------- --------------------
-
- OWNER                                              VARCHAR2(120)
- CONSTRAINT_NAME                           NOT NULL VARCHAR2(30)
- CONSTRAINT_TYPE                                    VARCHAR2(1)
- TABLE_NAME                                NOT NULL VARCHAR2(30)
- SEARCH_CONDITION                                   LONG
- R_OWNER                                            VARCHAR2(120)
- R_CONSTRAINT_NAME                                  VARCHAR2(30)
- DELETE_RULE                                        VARCHAR2(9)
- STATUS                                             VARCHAR2(8)
- DEFERRABLE                                         VARCHAR2(14)
- DEFERRED                                           VARCHAR2(9)
- VALIDATED                                          VARCHAR2(13)
- GENERATED                                          VARCHAR2(14)
- BAD                                                VARCHAR2(3)
- RELY                                               VARCHAR2(4)
- LAST_CHANGE                                        DATE
- INDEX_OWNER                                        VARCHAR2(30)
- INDEX_NAME                                         VARCHAR2(30)
- INVALID                                            VARCHAR2(7)
- VIEW_RELATED                                       VARCHAR2(14)
 
 CONSTRAINT_NAME                C TABLE_NAME                     STATUS
 ------------------------------ - ------------------------------ --------
@@ -413,141 +565,453 @@ CHK_DATEINTERV                 C INTERVENTIONS                  DISABLED
 \end{sql}
 
 %10
-\subsection{Retrouver toutes les informations permettant de recréer la table \texttt{INTERVENTIONS}}
-Pour récrer la table \texttt{INTERVENTIONS} il faut avoir les informations suivantes : les colones et leurs types, toutes les contraintes associés, toutes indexes créere sur la table et enfin toutes les priveleges données pour les utilisateurs qui concerne cette table
+\subsection{Retrouver toutes les informations permettant de recréer la table \texttt{INTERVENTIONS}.}
+Pour recréer la table \texttt{INTERVENTIONS} nous devons avoir connaissance des informations suivantes : 
+\begin{enumerate}
+	\item Nom, Type, Taille des colonnes et Acceptation de valeur NULL.
+	\item Contraintes associés.
+	Mais il y a possibilité que des indexes aillent été créé sur cette table donc nous aurons aussi besoin des informations suivantes:
+	\item Nom des indexes sur cette table.
+	\item Colonne Sur la quelle il existe un indexe.
+	En plus de la possibilité que des privilèges sur cette table aillent été accordé a des utilisateur, donc :
+	\item Privilège et utilisateur. 
+\end{enumerate} 
 
 \subsubsection{Requête}
 \begin{sql}
  DESC INTERVENTIONS;
- SELECT * FROM ALL_TABLES WHERE TABLE_NAME = 'INTERVENTIONS';
- SELECT * FROM ALL_TAB_COLUMNS WHERE TABLE_NAME = 'INTERVENTIONS';
- SELECT * FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'INTERVENTIONS';
- SELECT * FROM ALL_INDEXES WHERE TABLE_NAME = 'INTERVENTIONS';
- SELECT * FROM ALL_IND_COLUMNS WHERE TABLE_NAME = 'INTERVENTIONS';
- SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'INTERVENTIONS' ;
 \end{sql}
 
 \subsubsection{Résultat}
 \begin{sql}
-PAS DE RESULTATS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ---------------
+
+ NUMINTERVENTION                           NOT NULL NUMBER(38)
+ NUMVEHICULE                                        NUMBER(38)
+ TYPEINTERVENTION                                   VARCHAR2(40)
+ DATEDEBINTERV                                      DATE
+ DATEFININTERV                                      DATE
+ COUTINTERV                                         FLOAT(63)
 \end{sql}
+
+\subsubsection{Requête}
+\begin{sql}
+ SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, STATUS, R_OWNER , R_CONSTRAINT_NAME  
+ FROM ALL_CONSTRAINTS 
+ WHERE TABLE_NAME = 'INTERVENTIONS';
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+CONSTRAINT_NAME                C TABLE_NAME           STATUS	R_OWNER  		  R_CONSTRAINT_NAME
+------------------------------ - -------------------- --------- ----------------- -----------------
+FK_INTERVENTIONS_VEHICULE      R INTERVENTIONS        ENABLED   SYSTEM            PK_VEHICULE
+FK_INTERVENTIONS_VEHICULE      R INTERVENTIONS        ENABLED   DBAINTERVENTION   PK_VEHICULE
+PK_INTERVENTIONS               P INTERVENTIONS        ENABLED
+PK_INTERVENTIONS               P INTERVENTIONS        ENABLED
+CHK_DATEINTERV                 C INTERVENTIONS        DISABLED
+
+7 rows selected.
+\end{sql}
+ 
+\subsubsection{Requête}
+\begin{sql}
+ SELECT  OWNER ,INDEX_NAME ,INDEX_TYPE ,TABLE_OWNER ,TABLE_TYPE  
+ FROM ALL_INDEXES 
+ WHERE TABLE_NAME = 'INTERVENTIONS';
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+OWNER              INDEX_NAME	  	 INDEX_TYPE      TABLE_OWNER       TABLE_TYPE
+------------------ ----------------- --------------- ----------------- ----------
+SYSTEM             PK_INTERVENTIONS  NORMAL          SYSTEM            TABLE
+DBAINTERVENTION    PK_INTERVENTIONS  NORMAL          DBAINTERVENTION   TABLE
+\end{sql}
+  
+  
+\subsubsection{Requête}
+\begin{sql}
+ SELECT * 
+ FROM ALL_IND_COLUMNS 
+ WHERE TABLE_NAME = 'INTERVENTIONS';
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+ INDEX_OWNER     INDEX_NAME	       TABLE_OWNER      TABLE_NAME     COLUMN_NAME      C_P C_L CHAR_L DESC
+---------------- ----------------- ---------------- -------------- ---------------- --- --- ------ ----
+SYSTEM           PK_INTERVENTIONS  SYSTEM           INTERVENTIONS  NUMINTERVENTION  1   22  0      ASC
+DBAINTERVENTION  PK_INTERVENTIONS  DBAINTERVENTION  INTERVENTIONS  NUMINTERVENTION  1   22  0      ASC
+\end{sql}
+
+\subsubsection{Requête}
+\begin{sql}
+ SELECT * 
+ FROM ALL_TAB_PRIVS 
+ WHERE TABLE_NAME = 'INTERVENTIONS' ;
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+GRANTOR GRANTEE					        TABLE_SCHEMA  TABLE_NAME	 PRIVILEGE  GRA  HIE
+------- ------------------------------- ------------- -------------- ---------- ---- ---
+SYSTEM  GESTIONNAIRE_DES_INTERVENTIONS	 SYSTEM        INTERVENTIONS  UPDATE     NO   NO
+\end{sql}
+
 
 %11
 \subsection{Trouver tous les privilèges accordés à Admin.}
 \subsubsection{Requête}
 \begin{sql}
-DESC USER_TAB_PRIVS;
-SELECT PRIVILEGE, TABLE_NAME FROM USER_TAB_PRIVS WHERE GRANTEE = 'Admin';
+SELECT PRIVILEGE, TABLE_NAME 
+FROM ALL_TAB_PRIVS 
+WHERE GRANTEE = 'Admin';
 \end{sql}
+
 \subsubsection{Résultat}
 \begin{sql}
-  Name                                      Null?    Type
- ----------------------------------------- -------- --------------------
-
- GRANTEE                                   NOT NULL VARCHAR2(30)
- OWNER                                     NOT NULL VARCHAR2(30)
- TABLE_NAME                                NOT NULL VARCHAR2(30)
- GRANTOR                                   NOT NULL VARCHAR2(30)
- PRIVILEGE                                 NOT NULL VARCHAR2(40)
- GRANTABLE                                          VARCHAR2(3)
- HIERARCHY                                          VARCHAR2(3)
-
 no rows selected
- \end{sql}
+\end{sql}
 
-Il ya pas de privileges pour l'utilisateur \texttt{Admin} car nous avions retiré tous les privileges a l'Admin lors de TP précedent.
+Il y a pas de privilèges pour l'utilisateur \texttt{Admin}, car nous avions retiré tous les privilèges à l'Admin lors du TP précédent.
 
 %12
-\subsection{Trouver les rôles donnés à l’utilisateur Admin.}
+\subsection{Trouver les rôles donnés à l'utilisateur Admin.}
+Afin de prendre connaissance des colonnes de la table \texttt{DBA\_ROLE\_PRIVS} nous affichons d'abord sa structure.
+
 \subsubsection{Requête}
 \begin{sql}
-DESC USER_ROLE_PRIVS;
-CONNECT Admin/Admin;
-SELECT GRANTED_ROLE FROM USER_ROLE_PRIVS;
+DESC DBA_ROLE_PRIVS;
+
+SELECT GRANTED_ROLE 
+FROM DBA_ROLE_PRIVS 
+WHERE GRANTEE = 'ADMIN';
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
  Name                                      Null?    Type
- ----------------------------------------- -------- ---------------------
-
- USERNAME                                           VARCHAR2(30)
- GRANTED_ROLE                                       VARCHAR2(30)
+ ----------------------------------------- -------- ---------------
+ GRANTEE                                            VARCHAR2(30)
+ GRANTED_ROLE                              NOT NULL VARCHAR2(30)
  ADMIN_OPTION                                       VARCHAR2(3)
  DEFAULT_ROLE                                       VARCHAR2(3)
- OS_GRANTED                                         VARCHAR2(3)
+
 
 GRANTED_ROLE
 ------------------------------
 GESTIONNAIRE_DES_INTERVENTIONS
  \end{sql}
+ 
+ Nous retrouvons le rôle \texttt{GESTIONNAIRE\_DES\_INTERVENTIONS} crée et assigné à l'Admin lors du TP2.
 
 %13
-\subsection{Trouver tous les privilèges accordés à Admin.}
+\subsection{Trouver tous les objets appartenant à Admin.}
+Nous nous orientons vers la table \texttt{ALL\_OBJECTS} pour y récupérer les objets appartenant à Admin.
+
 \subsubsection{Requête}
 \begin{sql}
-DESC USER_OBJECTS;
-CONNECT ADMIN/ADMIN;
-SELECT OBJECT_NAME FROM USER_OBJECTS ;
+DESC ALL_OBJECTS;
+
+SELECT OBJECT_NAME 
+FROM ALL_OBJECTS 
+WHERE OWNER = 'ADMIN' ;
 \end{sql}
+
 \subsubsection{Résultat}
 \begin{sql}
-  Name                                      Null?    Type
- ----------------------------------------- -------- -------------------
-
- OBJECT_NAME                                        VARCHAR2(128)
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ---------------
+ OWNER                                     NOT NULL VARCHAR2(30)
+ OBJECT_NAME                               NOT NULL VARCHAR2(30)
  SUBOBJECT_NAME                                     VARCHAR2(30)
- OBJECT_ID                                          NUMBER
+ OBJECT_ID                                 NOT NULL NUMBER
  DATA_OBJECT_ID                                     NUMBER
  OBJECT_TYPE                                        VARCHAR2(19)
- CREATED                                            DATE
- LAST_DDL_TIME                                      DATE
+ CREATED                                   NOT NULL DATE
+ LAST_DDL_TIME                             NOT NULL DATE
  TIMESTAMP                                          VARCHAR2(19)
  STATUS                                             VARCHAR2(7)
  TEMPORARY                                          VARCHAR2(1)
  GENERATED                                          VARCHAR2(1)
  SECONDARY                                          VARCHAR2(1)
- NAMESPACE                                          NUMBER
+ NAMESPACE                                 NOT NULL NUMBER
  EDITION_NAME                                       VARCHAR2(30)
+ 
 
 OBJECT_NAME
 ---------------------------------------------
-
 NOMEMP_IX
 SYS_C007170
 MY_TABLE
 \end{sql}
 
+Ainsi nous savons que l'Admin possède trois (3) objets dont une table: \texttt{MY\_TABLE} et un index: \texttt{NOMEMP\_IX}. 
+
 %14
-\subsection{L’administrateur cherche le propriétaire de la table INTERVENTIONS, comment il pourra le trouver}
+\subsection{Recherche du propriétaire de la table \texttt{INTERVENTIONS} par l'administrateur.}
 \subsubsection{Requête}
 \begin{sql}
-SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'INTERVENTIONS';
+SELECT OWNER 
+FROM ALL_TABLES 
+WHERE TABLE_NAME = 'INTERVENTIONS';
 \end{sql}
 \subsubsection{Résultat}
 \begin{sql}
-PAS DE RESULTATS
+OWNER
+------------------------------
+DBAINTERVENTION
 \end{sql}
 
 %15
-\subsection{Donner la taille en Ko de la table \texttt{INTERVENTIONS}}
+\subsection{Taille en Ko de la table \texttt{INTERVENTIONS}.}
+C'est à travers la table \texttt{USER\_EXTENTS} que l'on pourra extraire la taille d'une table en BYTES, le résultat devra être divisé par 1024 afin de le convertir en Ko.  
+
 \subsubsection{Requête}
 \begin{sql}
-SELECT BYTES/1024 AS Taille_Ko FROM USER_EXTENTS WHERE SEGMENT_NAME = 'INTERVENTIONS';
+DESC USER_EXTENTS;
+
+SELECT BYTES/1024 AS Taille_Ko 
+FROM USER_EXTENTS 
+WHERE SEGMENT_NAME = 'INTERVENTIONS';
 \end{sql}
+
 \subsubsection{Résultat}
 \begin{sql}
+  Name                                      Null?    Type
+ ----------------------------------------- -------- --------------
+ SEGMENT_NAME                                       VARCHAR2(81)
+ PARTITION_NAME                                     VARCHAR2(30)
+ SEGMENT_TYPE                                       VARCHAR2(18)
+ TABLESPACE_NAME                                    VARCHAR2(30)
+ EXTENT_ID                                          NUMBER
+ BYTES                                              NUMBER
+ BLOCKS                                             NUMBER
+
  TAILLE_KO
 ----------
         64
 \end{sql}
 
 %16
-\subsection{Vérifier l’effet produit par chacune des commandes de définition de données du TP1 sur le dictionnaire.}
-\subsubsection{Requête}
+\subsection{Vérification de l'effet produit par chacune des commandes de définition de données du TP1 sur le dictionnaire.}
+Les commandes de définition de données du TP1 se résument en : 
+\begin{enumerate}
+	\item Création d'un utilisateur
+	\item Création d'une table
+	\item Ajout d'une colonne à une table
+	\item Ajout d'un contrainte à une table
+	\item Accorder des privilèges à un utilisateur
+	\item Retirer des privilèges à un utilisateur
+	
+\end{enumerate}
+\textrm{  }
+\\
+\textrm{Création d'un utilisateur:}
+\subsubsection{Requête/Résultat avant}
 \begin{sql}
+SQL> SELECT USERNAME FROM ALL_USERS ;
+
+USERNAME
+------------------------------
+XS\$NULL
+ADMIN
+USER0
+USER1
+APEX_040000
+APEX_PUBLIC_USER
+FLOWS_FILES
+HR
+MDSYS
+ANONYMOUS
+XDB
+CTXSYS
+OUTLN
+SYSTEM
+SYS
+ME
+DBAINTERVENTION
+
+17 rows selected.
 \end{sql}
-\subsubsection{Résultat}
+\subsubsection{Requête/Résulta commande de définition de donnée}
 \begin{sql}
-PAS DE RESULTATS
+SQL> CREATE USER TESTEUR IDENTIFIED BY TESTEUR;
+
+User created.
 \end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+SQL> SELECT USERNAME FROM ALL_USERS ;
+
+USERNAME
+------------------------------
+XS\$NULL
+TESTEUR
+ADMIN
+USER0
+USER1
+APEX_040000
+APEX_PUBLIC_USER
+FLOWS_FILES
+HR
+MDSYS
+ANONYMOUS
+XDB
+CTXSYS
+OUTLN
+SYSTEM
+SYS
+ME
+DBAINTERVENTION
+
+18 rows selected.
+\end{sql}
+
+\textrm{ }
+\\
+\textrm{Création d'une table:}
+\subsubsection{Requête/Résultat avant}
+\begin{sql}
+ SQL> SELECT * FROM USER_TABLES WHERE TABLE_NAME = 'TABLE_TESTEUR' ;
+
+no rows selected
+\end{sql}
+\subsubsection{Requête/Résulta commande de définition de donnée}
+\begin{sql}
+SQL> CREATE TABLE TABLE_TESTEUR (ID_TESTEUR INTEGER PRIMARY KEY, NOM_TESTEUR VAR
+CHAR2(30), NBR INTEGER DEFAULT(0));
+
+Table created.
+\end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+ SQL> SELECT TABLE_NAME,TABLESPACE_NAME, STATUS FROM USER_TABLES WHERE TABLE_NAME
+ = 'TABLE_TESTEUR' ;
+
+TABLE_NAME                     TABLESPACE_NAME                STATUS
+------------------------------ ------------------------------ --------
+TABLE_TESTEUR                  SYSTEM                         VALID
+\end{sql}
+
+\textrm{ }
+\\
+\textrm{Ajout d'une colonne à une table:}
+\subsubsection{Requête/Résultat avant}
+\begin{sql}
+ SQL> SELECT TABLE_NAME ,COLUMN_NAME , DATA_LENGTH FROM USER_TAB_COLUMNS WHERE TABLE_NAME = 'TABLE_TESTEUR';
+ 
+ TABLE_NAME                     COLUMN_NAME                    DATA_LENGTH
+------------------------------ ------------------------------ -----------
+TABLE_TESTEUR                  ID_TESTEUR                              22
+TABLE_TESTEUR                  NOM_TESTEUR                             30
+TABLE_TESTEUR                  NBR                                     22
+
+\end{sql}
+\subsubsection{Requête/Résulta commande de définition de donnée}
+\begin{sql}
+ SQL>  ALTER TABLE TABLE_TESTEUR ADD PRENOM_TESTEUR VARCHAR2(30) ;
+
+Table altered.
+\end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+SQL>  SELECT TABLE_NAME ,COLUMN_NAME , DATA_LENGTH FROM USER_TAB_COLUMNS WHERE T
+ABLE_NAME = 'TABLE_TESTEUR';
+
+TABLE_NAME                     COLUMN_NAME                    DATA_LENGTH
+------------------------------ ------------------------------ -----------
+TABLE_TESTEUR                  ID_TESTEUR                              22
+TABLE_TESTEUR                  NOM_TESTEUR                             30
+TABLE_TESTEUR                  NBR                                     22
+TABLE_TESTEUR                  PRENOM_TESTEUR                          30
+ 
+\end{sql}
+
+\textrm{ }
+\\
+\textrm{Ajout d'un contrainte à une table:}
+\subsubsection{Requête/Résultat avant}
+\begin{sql}
+ SELECT CONSTRAINT_NAME FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'TABLE_TESTEUR';
+ 
+ 
+ CONSTRAINT_NAME
+------------------------------
+SYS_C007211
+\end{sql}
+\subsubsection{Requête/Résulta commande de définition de donnée}
+\begin{sql}
+
+SQL>  ALTER TABLE TABLE_TESTEUR ADD CONSTRAINT CH_NBR8POSITIF CHECK ( NBR > 0);
+
+Table altered.
+\end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+SQL>  SELECT CONSTRAINT_NAME FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'TABLE_TES
+EUR';
+
+CONSTRAINT_NAME
+------------------------------
+SYS_C007211
+CH_NBR8POSITIF
+\end{sql}
+
+\textrm{ }
+\\
+\textrm{Accorder des privilèges à un utilisateur:}
+\subsubsection{Requête/Résultat avant}
+\begin{sql}
+ SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'TABLE_TESTEUR'; 
+ 
+ no rows selected
+\end{sql}
+\subsubsection{Requête/Résulta commande de définition de donnée}
+\begin{sql}
+SQL> GRANT SELECT ON TABLE_TESTEUR TO TESTEUR;
+
+Grant succeeded.
+\end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+SQL>   SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'TABLE_TESTEUR';
+
+GRANTOR      GRANTEE   TABLE_SCHEMA     TABLE_NAME      PRIVILEGE     GRA HIE
+------------ --------- ---------------- --------------- ------------- --- ---
+SYSTEM       TESTEUR   SYSTEM           TABLE_TESTEUR   SELECT        NO  NO
+
+
+\end{sql}
+
+\textrm{ }
+\\
+\textrm{Retirer des privilèges à un utilisateur:}
+\subsubsection{Requête/Résultat avant}
+\begin{sql}
+SQL>   SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'TABLE_TESTEUR';
+
+GRANTOR      GRANTEE   TABLE_SCHEMA     TABLE_NAME      PRIVILEGE     GRA HIE
+------------ --------- ---------------- --------------- ------------- --- ---
+SYSTEM       TESTEUR   SYSTEM           TABLE_TESTEUR   SELECT        NO  NO
+
+\end{sql}
+\subsubsection{Requête/Résulta commande de définition de donnée}
+\begin{sql}
+SQL> REVOKE SELECT ON TABLE\_TESTEUR FROM TESTEUR;
+
+Revoke succeeded.
+\end{sql}
+\subsubsection{Requête/Résultat après}
+\begin{sql}
+SQL>   SELECT * FROM ALL_TAB_PRIVS WHERE TABLE_NAME = 'TABLE_TESTEUR';
+
+no rows selected
+\end{sql}
+
+Toutes les commandes de définition de données présentées dans cette question reprennent celles du TP1 avec d'autres noms uniquement pour limiter la taille des affichages.
+
+Ainsi nous constatant que les commandes de définition de données ont un impacte sur le dictionnaire, car ce dernier stock sous forme de table toutes les informations relatives au table/view/index/user de la base de donnée.
+
 \end{document}
