@@ -12,7 +12,7 @@ int main()
 
 	i=2;
 
-	while( i < N && prem == 1){
+	while(i < N && prem == 1){
 
 		if( N%i == 0)
 			prem = 0;
@@ -32,3 +32,11 @@ int main()
 return 0;
 
 }
+
+//temporell 
+//millieur cas : 6
+//pire cas : 6N - 8
+
+//spaciale
+//millieur cas : 5 + 2
+//pire cas : 6N - 5

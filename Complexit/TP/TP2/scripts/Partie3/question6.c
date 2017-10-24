@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 int main()
 {
@@ -15,24 +16,25 @@ int main()
 	double tab2[12];
 
 
-	i=2;
-
 for(j=0 ; j<12 ; j++)
 {
 
 	deb = clock();
-
-	while( i < tab1[j] && prem == 1){
-
-		if( tab1[j]%i == 0)
+	i = 2;
+	printf("%d ------->   %d\n", i, (int) sqrt(tab1[j]));
+	while( i < (int) sqrt(tab1[j]) && prem == 1){
+		if(tab1[j] % i == 0)
 			prem = 0;
 		else
 			i = i + 1;
 	}
 
-	deb = clock();
+	fin = clock();
 
 	total = (double) (fin - deb)/CLOCKS_PER_SEC;
+
+	printf("tab2[%d] == %lf, prem = %d\n", j, tab2[j], prem);
+
 	
 	tab2[j]= total ;
 
