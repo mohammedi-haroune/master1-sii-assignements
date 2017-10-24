@@ -1,0 +1,39 @@
+%arara : pdflatex
+\documentclass[12pt]{article}
+
+\usepackage{style}
+
+\begin{document}
+\def\reportnumber{1}
+\def\reporttitle{Introduction au \texttt{ANTLR}}
+\input{front_page}
+\section{Installation}
+Dans cette section vous trouvez toutes les étapes a suivre pour l'installation de l'outil \texttt{ANTLR} sous les différent système d'exploitation.
+
+La procédure d'installation est vraiment simple et peut se resumer dans ces trois étpaes : 
+\begin{enumerate}
+    \item La première étape c'est de télécharger le fichier \texttt{jar} de l'outil.
+    \item La prochaine étpae c'est de mettre le fichier dans le \texttt{CLASSPATH} pour que java peut le trouver. 
+    \item La dernière étape consiste à créer un alias pour le programme de tel façon ou on peut l'appeler facilement.
+\end{enumerate}
+
+
+
+\subsection{Installation sous Linux}
+Exécuter la suite de commande suivantes dans un terminal \shellcmd{bash}
+
+\begin{enumerate}
+    \item 
+    \shellcmd{cd /usr/local/lib}
+
+    \shellcmd{sudo curl -O http://www.antlr.org/download/antlr-4.7-complete.jar}
+    \item \shellcmd{export CLASSPATH=".:/usr/local/lib/antlr-4.0-complete.jar:\char36CLASSPATH"}
+    \item \shellcmd{alias antlr4="java -jar /usr/local/lib/antlr-4.0-complete.jar"}
+
+\end{enumerate}
+
+Si vous voulez que ces configuations soit glabale et qu'il reste après la fermuture du \shellcmd{bash} il faut ajouter la commande \shellcmd{export} dans le fichier \shellcmd{.bash\_profile} et la commande \shellcmd{alias} dans le fichier \shellcmd{.bashrc}, les deux derniers fichiers se trouve dans le dossier \shellcmd{HOME}. 
+
+Et enfin executer les commandes : \shellcmd{bash .bash\_profile} et \shellcmd{bash .bashrc} pour executer les fichires précedentes.
+
+\end{document}
