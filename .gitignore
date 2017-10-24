@@ -3,3 +3,4 @@
 *.synctex.gz
 *.pdf
 .vscode/
+.idea
