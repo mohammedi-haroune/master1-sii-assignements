@@ -12,7 +12,7 @@
 
 \subsection{Développement de l'algorithme qui permet de déterminer  si un nombre entier naturel n est premier (n$>$=2). }
 Afin de vérifier si un nombre entier naturel "n" est premier ou pas nous allons tester s'il est divisible par un autre nombre entier naturel appartenant à l'intervalle $[2 - n]$.
-Pour cela nous allons utiliser la fonction modulo qui donne le reste de la division de n par i, i variant de 1 jusqu'à n.
+Pour cela nous allons utiliser la fonction modulo qui donne le reste de la division de n par i, i variant de 2 jusqu'à n.
 
 
 \begin{sql}
@@ -83,6 +83,32 @@ Le calcule de la complexité exact de cet algorithme n'est pas possible car nous
 
 
 \subsubsection{Calculer la complexité spatiale en notation exacte et/ou en notation asymptotique de Landau O (Grand O) de  cet  algorithme notée s(n).}
+Il s'agit du nombre de case mémoire ou octets utilisés par le programme.
+\\
+Pour calculer la complexité spatiale de cet algorithme nous allons considérer les tailles mémoires des types en langage C; tel que nous aurons:
+int/entier : 2 octets
+\\
+\begin{enumerate}
+	\item En notation exacte:
+	\\
+Nous avons dans cet algorithme que trois (3) variables de type "entier"
+\\
+Ce qui nous fait :
+\color{blue}
+ 3(2 octets) = 6 octets
+\color{black}
+\\
+ 
+	\item En notation asymptotique:
+	\\
+	Le nombre de case mémoire est constant, donc on obtient:
+	\\
+	\color{blue}
+	s(n) = O(1)
+	\color{black}
+	
+	
+\end{enumerate}
 
 
 
@@ -356,16 +382,21 @@ Sachant que pour le meilleur cas c'est une constante et pour le pire cas le grap
 
 
 \subsection{Interprétation des résultats.}
-\subsubsection{Comparaison des mesure de temps d'exécution avec le pire et meilleur cas:}
+\subsubsection{Comparaison des mesures de temps d'exécution avec le pire et meilleur cas:}
 \begin{enumerate}
-	\item 
-
-	\item Remarque:
+	\item Remarque: \\
+	En comparant le graphe de la variation du temps d'exécution de l'échantillon GT avec les graphes du meilleur f1 et pire f2 cas, nous constatons que GT tant à ressembler au graphe f1; ils ont tous deux une forme polynomial linéaire.
 	\\
+	  
+
+	\item Signification:
+	\\
+	Les données de l'échantillon correspondent au pire cas, effectivement se sont tous des nombres premiers.
+	
 
 \end{enumerate}
 
-\subsubsection{Remarque est déduction d'une fonction T(n) reliant n au temps d'exécution.}
+\subsubsection{Remarque et déduction d'une fonction T(n) reliant n au temps d'exécution.}
 
 On remarque que les temps d'exécution sont approximativement doublés lorsque N est doublé.
 \\
@@ -392,10 +423,10 @@ On peut constater la linéarité du graphe.
 On en déduit que le temps d'exécution est proportionnel à N, ce que l'on peut représenter par la formule suivante
 : 
 \begin{center}
-
+\color{blue}
 	$T(x*N) = x*T(N)$ pour tous $ x*N \in [1000003 - 2048000011] $	
 	
-
+\color{black}
 (x étant la tangente d'un point sur le graphe).
 \end{center}
 
@@ -405,26 +436,23 @@ Nous ne pouvant pas généraliser car les testes que nous avons fait n'englobent
 
 
 \subsubsection{Comparaison de la complexité théorique et expérimentale. }
-\begin{enumerate}
-
-	\item Complexité théorique:\\
-
-
-	\item Complexité expérimentale:\\
-	
-	Nous l'avons déja calculé dans le tableau 5.3
-	
-	\item Nous constatons que:\\
-	
-	
-\end{enumerate}
-
+Dans le cas des données de l'échantillon la complexité théorique et expérimentale sont du même ordre de grandeur que la complexité théorique du pire cas,
+\\
+Mais en générale la complexité expérimentale d'un échantillon quelconque est compris entre la complexité au pire cas et au meilleur cas.
+\\
+\begin{center}
+\color{blue}
+Complexité Meilleur cas $\le$ complexité expérimentale $\le$ complexité Pire cas 
+\\
+f2(n) $\le$ GT(n) $\le$ f1(n)
+\color{black}
+\end{center}
 
 \section{Partie II: Algorithme 2 du test de la primalité.}
 
 \subsection{Développement de l'algorithme qui permet de déterminer  si un nombre entier naturel n est premier (n$>$=2). }
 Afin de vérifier si un nombre entier naturel "n" est premier ou pas nous allons tester s'il est divisible par un autre nombre entier naturel appartenant à l'intervalle $[2 - n/2]$.
-Pour cela nous allons utiliser la fonction modulo qui donne le reste de la division de n par i, i variant de 1 jusqu'à n/2.
+Pour cela nous allons utiliser la fonction modulo qui donne le reste de la division de n par i, i variant de 2 jusqu'à $n/2$.
 
 
 \begin{sql}
@@ -444,7 +472,6 @@ Pour cela nous allons utiliser la fonction modulo qui donne le reste de la divis
 	prem = vrai;
 
 	tant que( i <= (N div 2) ET prem == vrai){
-
 		si( N mod i == 0)
 			alors 
 				prem = faux;				
@@ -458,7 +485,6 @@ Pour cela nous allons utiliser la fonction modulo qui donne le reste de la divis
     	sinon
         	écrire("Le nombre saisi :",N,"n'est pas premier! ");
  FIN. 
- 
 \end{sql}
 
 \subsection{Complexité:}
@@ -495,7 +521,32 @@ Le calcule de la complexité exact de cet algorithme n'est pas possible car nous
 
 
 \subsubsection{Calculer la complexité spatiale en notation exacte et/ou en notation asymptotique de Landau O (Grand O) de  cet  algorithme notée s(n).}
-
+Il s'agit du nombre de case mémoire ou octets utilisés par le programme.
+\\
+Pour calculer la complexité spatiale de cet algorithme nous allons considérer les tailles mémoires des types en langage C; tel que nous aurons:
+int/entier : 2 octets
+\\
+\begin{enumerate}
+	\item En notation exacte:
+	\\
+Nous avons dans cet algorithme que trois (3) variables de type "entier"
+\\
+Ce qui nous fait :
+\color{blue}
+ 3(2 octets) = 6 octets
+\color{black}
+\\
+ 
+	\item En notation asymptotique:
+	\\
+	Le nombre de case mémoire est constant, donc on obtient:
+	\\
+	\color{blue}
+	s(n) = O(1)
+	\color{black}
+	
+	
+\end{enumerate}
 
 
 \subsection{Développement de programme correspondant avec le langage C.}
@@ -507,7 +558,6 @@ Le calcule de la complexité exact de cet algorithme n'est pas possible car nous
 
 int main()
 {
-
 	int i,N,prem;
 
 	printf("donner la valeur de N = ");
@@ -517,7 +567,6 @@ int main()
 	prem = 1;
 
 	while( i <= N/2 && prem == 1){
-
 		if( N%i == 0)
 			prem = 0;
 		else
@@ -531,7 +580,6 @@ int main()
 	else{
         printf("Le nombre saisi : %d n'est pas premier! \n",N);
 	}
-
 return 0;
 }
 \end{sql}
@@ -561,7 +609,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 	
 	while( i <= tab[j]/2 && prem == 1){
-
 		if( tab[j]%i == 0)
 			prem = 0;
 		else
@@ -576,7 +623,6 @@ for(j=0 ; j<12 ; j++)
         printf("Le nombre saisie : %ld n'est pas premier! \n",tab[j]);
 	}
 }
-
 return 0;
 }
 \end{sql}
@@ -597,7 +643,7 @@ Le nombre saisie : 1024000009 est premier!
 Le nombre saisie : 2048000011 est premier!
 \end{sql}
 
-On remarque que tous les nombre données sont premiers!
+On remarque que tous les nombres données sont premiers!
 
 \subsection{Mesure des temps d'exécution T pour les nombres n données.}
 
@@ -625,7 +671,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 
 	while( i <= tab[j]/2 && prem == 1){
-
 		if( tab[j]%i == 0)
 			prem = 0;
 		else
@@ -731,7 +776,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 
 	while( i <= tab1[j]/2 && prem == 1){
-
 		if( tab1[j]%i == 0)
 			prem = 0;
 		else
@@ -745,7 +789,6 @@ for(j=0 ; j<12 ; j++)
 	printf("%lf, ", tab2[j]);
 }
 return 0;
-
 }
 \end{sql}
 
@@ -762,21 +805,21 @@ Sachant que pour le meilleur cas c'est une constante et pour le pire cas le grap
 \includegraphics[width=1\textwidth]{graphe/Algorithme2.png}
 
 \subsection{Interprétation des résultats.}
-\subsubsection{Comparaison des mesure de temps d'exécution avec le pire et meilleur cas:}
+\subsubsection{Comparaison des mesures de temps d'exécution avec le pire et meilleur cas:}
 \begin{enumerate}
-	\item Le graphe:
+	\item Remarque: \\
+	En comparant le graphe de la variation du temps d'exécution de l'échantillon GT avec les graphes du meilleur f1 et pire f2 cas, nous constatons que GT tant à ressembler au graphe f1; ils ont tous deux une forme polynomial linéaire.
 	\\
-	%\includegraphics[width=1\textwidth]{graphe/Algorithme1.png}
+	  
 
-	\item Remarque:
+	\item Signification:
 	\\
-	On constate que le graphe obtenu à partir de la mesure des temps d'exécution de l'échantillon tant à ressembler au graphe du pire cas.
-	\\
-	Donc le graphe GT correspond au graphe du pire cas car tous les nombres de l'échantillon sont Premiers.
+	Les données de l'échantillon correspondent au pire cas, effectivement se sont tous des nombres premiers.
 	
+
 \end{enumerate}
 
-\subsubsection{Remarque est déduction d'une fonction T(n) reliant n au temps d'exécution.}
+\subsubsection{Remarque et déduction d'une fonction T(n) reliant n au temps d'exécution.}
 
 
 On remarque que les temps d'exécution sont approximativement doublés lorsque N est doublé.
@@ -804,10 +847,10 @@ On peut constater la linéarité du graphe.
 On en déduit que le temps d'exécution est proportionnel à N, ce que l'on peut représenter par la formule suivante
 : 
 \begin{center}
-
+\color{blue}
 	$T(x*N) = x*T(N)$ pour tous $ x*N \in [1000003 - 2048000011] $	
 	
-
+\color{black}
 (x étant la tangente d'un point sur le graphe).
 \end{center}
 
@@ -818,19 +861,17 @@ Nous ne pouvant pas généraliser car les testes que nous avons fait n'englobent
 
 \subsubsection{Comparaison de la complexité théorique et expérimentale. }
 
-\begin{enumerate}
-
-	\item Complexité théorique:\\
-	
-
-	\item Complexité expérimentale:\\
-	
-	Nous l'avons déja calculé dans le tableau 5.3
-	
-	\item Nous constatons que:\\
-	
-	
-\end{enumerate}
+Dans le cas des données de l'échantillon la complexité théorique et expérimentale sont du même ordre de grandeur que la complexité théorique du pire cas,
+\\
+Mais en générale la complexité expérimentale d'un échantillon quelconque est compris entre la complexité au pire cas et au meilleur cas.
+\\
+\begin{center}
+\color{blue}
+Complexité Meilleur cas $\le$ complexité expérimentale $\le$ complexité Pire cas 
+\\
+f2(n) $\le$ GT(n) $\le$ f1(n)
+\color{black}
+\end{center}
 
 
 \subsection{Comparaison des deux algorithmes précédents.}
@@ -839,16 +880,16 @@ Nous ne pouvant pas généraliser car les testes que nous avons fait n'englobent
 \includegraphics[width=1\textwidth]{graphe/Algorithme1_VS_Algorithme2.png}
 
 \subsubsection{Choix de l'algorithme le plus performant:}
-Il est clairement visible à travers la représentation des deux graphes ci-dessus que l'algorithme 2 ($\frac{n}{2}$) est plus rapide (temps d'exécution) que l'algorithme 1 (n).
+Il est clairement visible à travers la représentation des deux graphes ci-dessus que l'algorithme2 ($\frac{n}{2}$) est plus rapide (temps d'exécution) que l'algorithme1 (n).
 
 Donc en terme de rapidité nous choisissons l'Algorithme 2.
-
+(vu qu'en terme d'espace mémoire ils sont équivalent)
 
 \section{Partie III: Algorithme 3 du test de la primalité.}
 
 \subsection{Développement de l'algorithme qui permet de déterminer  si un nombre entier naturel n est premier (n$>$=2). }
 Afin de vérifier si un nombre entier naturel "n" est premier ou pas il nous allons tester s'il est divisible par un autre nombre entier naturel appartenant à l'intervalle $[2 - \sqrt(n)]$.
-Pour cela nous allons utiliser la fonction modulo qui donne le reste de la division de n par i, i variant de 1 jusqu'à n.
+Pour cela nous allons utiliser la fonction sqrt qui donne la racine carré de i, i variant de 2 jusqu'à $\sqrt(n)$.
 
 
 \begin{sql}
@@ -868,7 +909,6 @@ Pour cela nous allons utiliser la fonction modulo qui donne le reste de la divis
 	prem = vrai;
 
 	tant que( i <= sqrt(N) ET prem == vrai){
-
 		si( N mod i == 0)
 			alors 
 				prem = faux;				
@@ -882,7 +922,6 @@ Pour cela nous allons utiliser la fonction modulo qui donne le reste de la divis
     	sinon
         	écrire("Le nombre saisi :",N,"n'est pas premier! ");
  FIN. 
- 
 \end{sql}
 
 \subsection{Complexité:}
@@ -920,7 +959,32 @@ Le calcule de la complexité exact de cet algorithme n'est pas possible car nous
 
 
 \subsubsection{Calculer la complexité spatiale en notation exacte et/ou en notation asymptotique de Landau O (Grand O) de  cet  algorithme notée s(n).}
-
+Il s'agit du nombre de case mémoire ou octets utilisés par le programme.
+\\
+Pour calculer la complexité spatiale de cet algorithme nous allons considérer les tailles mémoires des types en langage C; tel que nous aurons:
+int/entier : 2 octets
+\\
+\begin{enumerate}
+	\item En notation exacte:
+	\\
+Nous avons dans cet algorithme que trois (3) variables de type "entier"
+\\
+Ce qui nous fait :
+\color{blue}
+ 3(2 octets) = 6 octets
+\color{black}
+\\
+ 
+	\item En notation asymptotique:
+	\\
+	Le nombre de case mémoire est constant, donc on obtient:
+	\\
+	\color{blue}
+	s(n) = O(1)
+	\color{black}
+	
+	
+\end{enumerate}
 
 
 \subsection{Développement de programme correspondant avec le langage C.}
@@ -933,9 +997,7 @@ Le calcule de la complexité exact de cet algorithme n'est pas possible car nous
 
 int main()
 {
-
 	int i,N,prem;
-
 
 	printf("donner la valeur de N = ");
 	scanf("%d",&N);
@@ -944,7 +1006,6 @@ int main()
 	prem = 1;
 
 	while( i <= sqrt(N) && prem == 1){
-
 		if( N%i == 0)
 			prem = 0;
 		else
@@ -958,12 +1019,8 @@ int main()
 	else{
         printf("Le nombre saisi : %d n'est pas premier! \n",N);
 	}
-
-
 return 0;
-
 }
-
 \end{sql}
 
 
@@ -991,7 +1048,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 	
 	while( i <= sqrt(tab[j]) && prem == 1){
-
 		if( tab[j]%i == 0)
 			prem = 0;
 		else
@@ -1006,7 +1062,6 @@ for(j=0 ; j<12 ; j++)
         printf("Le nombre saisie : %ld n'est pas premier! \n",tab[j]);
 	}
 }
-
 return 0;
 }
 \end{sql}
@@ -1027,7 +1082,7 @@ Le nombre saisie : 1024000009 est premier!
 Le nombre saisie : 2048000011 est premier!
 \end{sql}
 
-On remarque que tous les nombre données sont premiers!
+On remarque que tous les nombres données sont premiers!
 
 \subsection{Mesure des temps d'exécution T pour les nombres n données.}
 
@@ -1055,7 +1110,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 
 	while( i < tab[j] && prem == 1){
-
 		if( tab[j]%i == 0)
 			prem = 0;
 		else
@@ -1159,7 +1213,6 @@ for(j=0 ; j<12 ; j++)
 	prem = 1;
 
 	while( i < tab1[j] && prem == 1){
-
 		if( tab1[j]%i == 0)
 			prem = 0;
 		else
@@ -1173,9 +1226,7 @@ for(j=0 ; j<12 ; j++)
 	printf("%lf, ", tab2[j]);
 }
 return 0;
-
 }
-
 \end{sql}
 
 \subsection{Représentation par un graphe, Gf1(n) et Gf2(n), les variations de la fonction de la complexité temporelle correspondant au meilleur cas f1(n) et au pire cas f2(n) en fonction de n respectivement; et par un autre graphe, noté GT(n), les variations  du temps d'exécution T(n) en fonction de n.}
@@ -1191,37 +1242,71 @@ Sachant que pour le meilleur cas c'est une constante et pour le pire cas le grap
 \includegraphics[width=1\textwidth]{graphe/Algorithme3.png}
 
 \subsection{Interprétation des résultats.}
-\subsubsection{Comparaison des mesure de temps d'exécution avec le pire et meilleur cas:}
+\subsubsection{Comparaison des mesures de temps d'exécution avec le pire et meilleur cas:}
 \begin{enumerate}
-	\item Le graphe:
+	\item Remarque: \\
+	En comparant le graphe de la variation du temps d'exécution de l'échantillon GT avec les graphes du meilleur f1 et pire f2 cas, nous constatons que GT tant à ressembler au graphe f1; ils ont tous deux une forme  racinaire.
 	\\
-	%\includegraphics[width=1\textwidth]{graphe/Algorithme1.png}
-
-	\item Remarque:
+	  
+	\item Signification:
 	\\
-	On constate que le graphe obtenu à partir de la mesure des temps d'exécution de l'échantillon tant à ressembler au graphe du pire cas.
-	\\
-	Donc le graphe GT correspond au graphe du pire cas car tous les nombres de l'échantillon sont Premiers.
+	Les données de l'échantillon correspondent au pire cas, effectivement se sont tous des nombres premiers.
 	
+
 \end{enumerate}
 
-\subsubsection{Remarque est déduction d'une fonction T(n) reliant n au temps d'exécution.}
+\subsubsection{Remarque et déduction d'une fonction T(n) reliant n au temps d'exécution.}
+
+
+On remarque que les temps d'exécution sont augmentés de 0.001000 lorsque N est multipliée par 8.
+\\
+
+\color{blue}
+Exemples:
+\color{black} 
+\\
+N1 = $32000011  \Rightarrow  $  T1 = 0.001000
+\\
+N2 = $256000001 \approx 8 * N1  \Rightarrow  $  T2 = 0.002000 $\approx T1 + 0.00100 $
+\\
+
+Aussi
+\\
+N1 = $256000001 \Rightarrow $  T1 = 0.002000
+\\
+N2 = $2048000011 \approx 8 * N1 \Rightarrow $  T2 = 0.003000 $\approx T1 + 0.001000 $
+\\
+
+On peut constater la linéarité du graphe. 
+\\
+\\
+On en déduit que le temps d'exécution est proportionnel à N, ce que l'on peut représenter par la formule suivante
+: 
+\begin{center}
+\color{blue}
+	$T(x*N) = T(N) + y $ pour tous $ x \in [1000003 - 2048000011]$ et $y < 1 $	
+	
+\color{black}
+
+\end{center}
+
+Nous ne pouvant pas généraliser car les testes que nous avons fait n'englobent pas toutes les valeurs possibles, 
+	
+
 
 \subsubsection{Comparaison de la complexité théorique et expérimentale. }
-\begin{enumerate}
 
-	\item Complexité théorique:\\
-
-
-	\item Complexité expérimentale:\\
-	
-	Nous l'avons déja calculé dans le tableau 5.3
-	
-	\item Nous constatons que:\\
-	
-	
-\end{enumerate}
-
+Dans le cas des données de l'échantillon la complexité théorique et expérimentale sont du même ordre de grandeur que la complexité théorique du pire cas,
+\\
+Mais en générale la complexité expérimentale d'un échantillon quelconque est compris entre la complexité au pire cas et au meilleur cas.
+\\
+\begin{center}
+\color{blue}
+Complexité Meilleur cas $\le$ complexité expérimentale $\le$ complexité Pire cas 
+\\
+f2(n) $\le$ GT(n) $\le$ f1(n)
+\color{black}
+\end{center}
 
 
 \subsection{Comparaison des trois algorithmes précédents.}
@@ -1233,5 +1318,5 @@ Sachant que pour le meilleur cas c'est une constante et pour le pire cas le grap
 Il est clairement visible à travers la représentation des trois graphes que l'algorithme 3 ($\sqrt{n}$) est plus rapide que d'algorithme 2 ($\frac{n}{2}$) qui est lui même plus rapide que l'algorithme 1 (n).
 
 Donc en terme de rapidité nous choisissons l'Algorithme 3.
-
+(vu qu'en terme d'espace mémoire ils sont équivalent)
 \end{document}
