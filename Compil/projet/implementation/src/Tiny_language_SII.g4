@@ -68,6 +68,6 @@ INT :   '0' | [1-9] [0-9]* ; // no leading zeros
 
 COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
 
-WS : [ \t\n\r]+ -> skip ;
+WS : [ \t\n\r]+ -> channel(HIDDEN) ;
 
 
