@@ -1,4 +1,4 @@
- SET SERVEROUTPUT ON
+SET SERVEROUTPUT ON
 
 /** 1 **/
 DECLARE 
@@ -39,6 +39,96 @@ La marque : alfa-romeo posséde 2 modeles .
 La marque : toyota posséde 1 modeles .
 La marque : jaguar posséde 1 modeles .
 La marque : lexus posséde 1 modeles .
+
+PL/SQL procedure successfully completed.
+**/
+
+/** 2 **/
+
+/** a **/
+/* ajout de la contrainte de salaire */
+
+ALTER TABLE EMPLOYE ADD CONSTRAINT LIMIT_SALAIRE CHECK(SALAIRE >= 10000 AND SALAIRE <= 30000)
+
+
+/**
+Table altered.
+**/
+
+/* désactiver la contrainte */
+
+ALTER TABLE EMPLOYE DISABLE CONSTRAINT LIMIT_SALAIRE;
+
+/**
+Table altered.
+**/
+
+/* procedure d'ajout des salaires */
+CREATE OR REPLACE PROCEDURE Augmentation_salaire
+AS
+
+cursor cr is select NUMEMPLOYE,NOMEMP,PRENOMEMP,CATEGORIE,SALAIRE FROM EMPLOYE ;
+s INTEGER ;
+c cr%rowtype ;
+vide exception ;
+
+BEGIN
+
+for c in cr LOOP
+	if (c.CATEGORIE = 'MECANICIEN')
+	then
+		s:= c.SALAIRE * 1.50;
+	else
+		s:= c.SALAIRE * 1.30;
+	end if;
+	
+	dbms_output.put_line('L employe : ' || c.NOMEMP || ' ' || c.PRENOMEMP || ' de catégorie : ' || c.CATEGORIE || ' passe d un salaire de: ' || c.SALAIRE || ' à ' || s || '.');
+	UPDATE EMPLOYE E SET SALAIRE = s WHERE E.NUMEMPLOYE = c.NUMEMPLOYE ;
+	
+	exit when cr%notfound;
+	
+END LOOP;
+
+EXCEPTION WHEN vide THEN
+	dbms_output.put_line('Aucun employé n est trouvé ! ');
+
+
+END;
+/
+
+/**
+Procedure created.
+**/
+
+show errors procedure Augmentation_salaire
+
+/**
+No errors.
+**/
+
+EXECUTE Augmentation_salaire;
+
+/**
+L employe : bouzid lachemi de catégorie : MECANICIEN passe d un salaire de: 25000 à 37500.
+L employe : elias bouchemla de catégorie : ASSISTANT passe d un salaire de: 10000 à 13000.
+L employe : zouhir hadj de catégorie : ASSISTANT passe d un salaire de: 12000 à 15600.
+L employe : hakim oussedik de catégorie : MECANICIEN passe d un salaire de: 20000 à 30000.
+L employe : abdelhamid abad de catégorie : ASSISTANT passe d un salaire de: 13000 à 16900.
+L employe : tayeb babaci de catégorie : MECANICIEN passe d un salaire de: 21300 à 31950.
+L employe : mourad belhamidi de catégorie : MECANICIEN passe d un salaire de: 19500 à 29250.
+L employe : redouane igoudjil de catégorie : ASSISTANT passe d un salaire de: 15000 à 19500.
+L employe : bahim koula de catégorie : MECANICIEN passe d un salaire de: 23100 à 34650.
+L employe : ahcene rahali de catégorie : MECANICIEN passe d un salaire de: 24000 à 36000.
+L employe : ismail chaoui de catégorie : ASSISTANT passe d un salaire de: 13000 à 16900.
+L employe : hatem badi de catégorie : ASSISTANT passe d un salaire de: 14000 à 18200.
+L employe : mustapha mohammedi de catégorie : MECANICIEN passe d un salaire de: 24000 à 36000.
+L employe : abdelaziz fekar de catégorie : ASSISTANT passe d un salaire de: 13500 à 17550.
+L employe : wahid saidouni de catégorie : MECANICIEN passe d un salaire de: 25000 à 37500.
+L employe : farid boularas de catégorie : ASSISTANT passe d un salaire de: 14000 à 18200.
+L employe : nassim chaker de catégorie : MECANICIEN passe d un salaire de: 26000 à 39000.
+L employe : yacine terki de catégorie : MECANICIEN passe d un salaire de: 23000 à 34500.
+L employe : ahmed tebibel de catégorie : ASSISTANT passe d un salaire de: 17000 à 22100.
+L employe : karim lardjoune de catégorie :  passe d un salaire de: 25000 à 32500.
 
 PL/SQL procedure successfully completed.
 **/
@@ -102,6 +192,78 @@ ANNE NUMVEHICULE DATEDEBI DATEFINI
 **/
 
 
+/** 4 **/
+
+CREATE OR REPLACE FUNCTION Nombre_interv(num in EMPLOYE.NUMEMPLOYE%type )
+return number
+IS 
+
+cursor cr is SELECT I.NUMEMPLOYE, E.NOMEMP , E.PRENOMEMP, COUNT(*) AS NBR
+FROM INTERVENANT I, EMPLOYE E 
+WHERE E.NUMEMPLOYE = num
+AND I.NUMEMPLOYE = E.NUMEMPLOYE
+GROUP BY I.NUMEMPLOYE, E.NOMEMP , E.PRENOMEMP;
+
+c cr%rowtype;
+vide exception;
+i binary_integer;
+
+BEGIN
+
+for c in cr LOOP
+	dbms_output.put_line('L emplyé : '|| c.NOMEMP || ' ' || c.PRENOMEMP || ' a fait ' || c.NBR || ' inteventions. ');
+	
+	return(c.NBR);
+END LOOP;
+
+END;
+/
+
+/**
+Function created.
+**/
+
+
+
+SELECT Nombre_interv(55) from dual;
+
+/**
+NOMBRE_INTERV(55)
+-----------------
+                2
+
+L emplyé : zouhir hadj a fait 2 inteventions.
+**/
+
+SELECT Nombre_interv(60) from dual;
+
+/**
+NOMBRE_INTERV(60)
+-----------------
+                3
+
+L emplyé : redouane igoudjil a fait 3 inteventions.
+**/
+
+SELECT Nombre_interv(59) from dual;
+
+/**
+NOMBRE_INTERV(59)
+-----------------
+                4
+
+L emplyé : mourad belhamidi a fait 4 inteventions.
+**/
+
+SELECT Nombre_interv(67) from dual;
+
+/**
+NOMBRE_INTERV(67)
+-----------------
+                1
+
+L emplyé : wahid saidouni a fait 1 inteventions.
+**/
 
 
 
@@ -197,4 +359,13 @@ NUMINTERVENTION NUMVEHICULE TYPEINTERVENTION             DATEDEBI	DATEFINI COUTI
 --------------- ----------- ---------------------------- ---------- -------- ----------
              25           8 réparation systeme           12/05/06	12/05/06     200000
 **/
+
+
+
+
+
+
+
+
+
 
