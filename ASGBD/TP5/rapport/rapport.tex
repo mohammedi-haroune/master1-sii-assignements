@@ -115,7 +115,8 @@ BEGIN
 	SELECT MARQUE INTO NOM_MARQUE
 	FROM MARQUE WHERE NUMMARQUE = NUM;
 
-	DBMS_OUTPUT.PUT_LINE('un nouveau modèle est ajouté à la marque' || NOM_MARQUE);
+
+	DBMS_OUTPUT.PUT_LINE('un nouveau modele est ajoute a la marque' || NOM_MARQUE);
 END;
 /
 \end{sql}
@@ -128,7 +129,6 @@ Trigger created.
 
 
 \subsection{Tester les triggers}
-Pour pouvoir s'assurer que le trigger \texttt{NOUVEAU_MODELE} sont fonctionelles on va insérer un tuple dans la table modèle
 \subsubsection{Requête}
 \begin{sql}
 INSERT INTO MODELE VALUES (99,15,'504');
@@ -137,7 +137,7 @@ INSERT INTO MODELE VALUES (99,15,'504');
 
 \subsubsection{Résultat}
 \begin{sql}
-un nouveau modèle est ajouté à la marque peugeot
+un nouveau modele est ajoute a la marque peugeot
 1 row inserted.
 \end{sql}
 
@@ -248,8 +248,4 @@ TOTAL_INTERVENTIONS
 \end{sql}
 
 Effectivement après l'insertion le nombre totale d'intervention à été incrémenté
-
-
-
-
 \end{document}
