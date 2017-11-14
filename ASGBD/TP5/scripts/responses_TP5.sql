@@ -110,6 +110,10 @@ BEGIN
 END;
 /
 
+/* tests */
+
+
+
 /***********************************************************************************************************************************/
 /** 3 **/
 /**3. Création d'un trigger qui vérifie que lors de la modification du salaire d’un employé, 
@@ -150,6 +154,35 @@ ORA-04088: error during execution of trigger 'SYSTEM.UPDATE_SALAIRE'
 
 /***********************************************************************************************************************************/
 /** 4 **/
+
+Pour pouvoir assurer que les période sont correct il faut déclaré un tirgger qui va être exécuté a chaque insertion ou mise à jour des dates
+Ce trigger a pour but de comparer les valeur de dates en question avec les valeurs de l'intervention correspondante 
+et dans le cas où la période de l'intervention de l'employé n'est comprise entre la période de l'intervention correspondante une exception est levé
+a l'aide de la fonction \texttt{RAISE\_APPLICATION\_ERROR}
+
+CREATE OR REPLACE TRIGGER CHECK_PERIODE_INTER 
+BEFORE INSERT OR UPDATE OF DATEDEBUT,DATEFIN ON INTERVENANT
+FOR EACH ROW
+
+DECLARE
+INTER_ROW INTERVENTIONS%ROWTYPE;
+
+BEGIN
+
+  SELECT * INTO INTER_ROW FROM INTERVENTIONS WHERE NUMINTERVENTION = :NEW.NUMINTERVENTION;
+  IF((INTER_ROW.DATEDEBINTERV <= :NEW.DATEDEBUT AND INTER_ROW.DATEFININTERV >= :NEW.DATEFIN ))
+ THEN
+	DBMS_OUTPUT.PUT_LINE('PERIODE VALIDE POUR L EMPLOYE :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+	
+ ELSE RAISE_APPLICATION_ERROR(-20002,'PERIODE INVALIDE POUR L EMPLOYE INTERVENANT :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+END IF;
+
+END;
+/
+
+/* Test */
+INSERT INTO INTERVENTIONS VALUES (13,8,'réparation systeme',to_date('2006-05-12 14:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-12 18:00:00','YYYY-MM-DD HH24:MI:SS' ),17846);
+INSERT INTO INTERVENANT VALUES (13,54,to_date('2006-02-26 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-02-26 12:00:00','YYYY-MM-DD HH24:MI:SS' ));
 
 
 /***********************************************************************************************************************************/
@@ -215,11 +248,50 @@ TOTAL_INTERVENTIONS
 
 /***********************************************************************************************************************************/
 /** 6 **/
-/*Création de la table CHIFRE AFFAIRE */
+/* La suite de reqûete qui permet de répondre au besoin posé dans la question est */
+/*
+\begin{itemize}
+\item Création de la table \texttt{CHIFRE AFFAIRE} avec une reqûete \texttt{CREATE TABLE} 
+\item Compter le nombre de tuple pour la date (le moi et l'année) en question avec une reqûte \texttt{SELECT}
+\item Si le nombre est nulle créer un nouveau tuple avec la requête \texttt{INSERT}
+\item Sinon mise à jour du nombre de gain actuelle avec la reqûete \texttt{UPDATE}
+*/
+CREATE TABLE CHIFFRE_AFFAIRE (
+MOIS INTEGER,
+ANNEE INTEGER,
+TOTAL_GAINS REAL
+);
 
+CREATE OR REPLACE TRIGGER TRIGGER_GAINS 
+AFTER INSERT ON INTERVENTIONS 
+FOR EACH ROW
+DECLARE 
+CURR_GAIN CHIFFRE_AFFAIRE%ROWTYPE;
+I INTEGER;
+BEGIN
 
+SELECT COUNT(*) INTO I
+FROM CHIFFRE_AFFAIRE 
+WHERE MOIS = EXTRACT(MONTH FROM :NEW.DATEDEBINTERV)
+AND ANNEE = EXTRACT(YEAR FROM :NEW.DATEDEBINTERV);
 
+SELECT * INTO CURR_GAIN
+FROM CHIFFRE_AFFAIRE 
+WHERE MOIS = EXTRACT(MONTH FROM :NEW.DATEDEBINTERV)
+AND ANNEE = EXTRACT(YEAR FROM :NEW.DATEDEBINTERV);
 
+IF I = 0 THEN
+UPDATE CHIFFRE_AFFAIRE 
+SET TOTAL_GAINS=(TOTAL_GAINS +:NEW.COUTINTERV)  
+WHERE MOIS = CURR_GAIN.MOIS;
+AND ANNEE = CURR_GAIN.ANNEE;
+DBMS_OUTPUT.PUT_LINE('TOTAL_GAINS DU MOIS DE : '|| CURR_GAIN.MOIS ||' A ETE INCREMENTÉ DE :'|| :NEW.COUTINTERV );
+ELSE
+INSERT INTO CHIFFRE_AFFAIRE VALUES(MOIS,TO_CHAR(:NEW.DATEDEBINTERV ,'YYYY'),:NEW.COUTINTERV);
+DBMS_OUTPUT.PUT_LINE('NOUVEAU CHIFFRE_AFFAIRE AJOUTÉ');
+DBMS_OUTPUT.PUT_LINE('MOIS  : '|| MOIS ||' ANNEE:' || TO_CHAR(:NEW.DATEDEBINTERV ,'YYYY')||' TOTAL_GAIN :'|| :NEW.COUTINTERV );
+END IF;
+END;
 
 
 

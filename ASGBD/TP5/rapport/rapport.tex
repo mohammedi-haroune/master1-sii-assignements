@@ -90,13 +90,13 @@ après chaque insertion d'un}
 
 \begin{itemize}
 \item
-La clause \texttt{INTO} dans la requête \texttt{SELECT} nous permet de recupérer la 
+La clause \texttt{INTO} dans la requête \texttt{SELECT} nous permet de récupérer la 
 valeur de l'attribut en question dans une variable
 \item
 Le tuple spécial \texttt{:NEW} générer par le SGBD dans le corps les triggers des insertions 
-sauvgarde le tuple qui viens d'être inserer dans la base
+sauvegarde le tuple qui viens d'être insérer dans la base
 \item
-En utilisant les concepts \texttt{INTO} et \texttt{:NEW}, on écrit la requete qui récupère la marque du modèle en question
+En utilisant les concepts \texttt{INTO} et \texttt{:NEW}, on écrit la requête qui récupère la marque du modèle en question
 \end{itemize}
 
 
@@ -146,9 +146,9 @@ un nouveau modele est ajoute a la marque peugeot
 \item
 Le \texttt{BEFORE} permet de remettre en cause la mise a jours contenu dans le trigger
 \item
-Pour cela l'on doit arreter la modification avant son exécution , donc utiliser le \texttt{BEFORE}
-puis l'on compare la nouvelle valeur du \texttt{SALAIRE} que l'on souhaite mettre "\texttt{NEW}" avec l'ancienne existante "\texttt{OLD}"
-et l'on génère une interruption (erreur) avec la fonction \texttt{raise\_application\_error} pour empecher la modification dans le cas ou
+Pour cela l'on doit arrêter la modification avant son exécution , donc utiliser le \texttt{BEFORE}
+puis l'on compare la nouvelle valeur du \texttt{SALAIRE} que l'on souhaite mettre (\texttt{NEW}) avec l'ancienne existante (\texttt{OLD})
+et l'on génère une interruption (erreur) avec la fonction \texttt{raise\_application\_error} pour empêcher la modification dans le cas ou
 \texttt{NEW < OLD}
 \end{itemize}
 
@@ -170,7 +170,7 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester les triggers}
-Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} sont fonctionelles on va insérer un tuple qui génère une exception
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} est fonctionnelle on va insérer un tuple qui génère une exception
 \subsubsection{Requête}
 \begin{sql}
 UPDATE EMPLOYE SET SALAIRE = SALAIRE - 100 WHERE NUMEMPLOYE = 53 ;
@@ -184,17 +184,101 @@ ORA-06512: at "SYSTEM.UPDATE_SALAIRE", line 3
 ORA-04088: error during execution of trigger 'SYSTEM.UPDATE_SALAIRE'
 \end{sql}
 
-Le trigger a arreté le programme et invalidé la mise a jours, Il a ainsi protégé l'integrité de la base de données
+Le trigger a arrêté le programme et invalidé la mise a jours, Il a ainsi protégé l'intégrité de la base de données
 
-\subsection{QUESTION 5}
-Afin que l’administrateur puisse connaitre le nombre total des interventions pour chaque employé. 
-Pour cela, nous ajoutons l'attribut TOTAL\_INTERVENTIONS dans la table employé.
-Puis nous créons le trigger TOTAL\_INTERVENTIONS\_TRIGGER qui met à jour l’attribut TOTAL\_INTERVENTIONS.
+%Question 4
+\subsection{Création du trigger pour vérifier la période des interventions}
+
+Pour pouvoir assurer que les période sont correct il faut déclaré un tirgger qui va être exécuté a chaque insertion ou mise à jour des dates (\texttt{DATEDEBUT},\texttt{DATEFIN})
+Ce trigger a pour but de comparer les valeur de dates en question avec les valeurs de l'intervention correspondante 
+et dans le cas où la période de l'intervention de l'employé n'est pas comprise entre la période de l'intervention correspondante une exception est levé
+a l'aide de la fonction \texttt{RAISE\_APPLICATION\_ERROR}
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE OR REPLACE TRIGGER CHECK_PERIODE_INTER 
+BEFORE INSERT OR UPDATE OF DATEDEBUT,DATEFIN ON INTERVENANT
+FOR EACH ROW
+
+DECLARE
+INTER_ROW INTERVENTIONS%ROWTYPE;
+
+BEGIN
+
+IF(INSERTING) THEN
+  SELECT * INTO INTER_ROW FROM INTERVENTIONS WHERE NUMINTERVENTION = :NEW.NUMINTERVENTION;
+  IF((INTER_ROW.DATEDEBINTERV <= :NEW.DATEDEBUT) AND (INTER_ROW.DATEFININTERV >= :NEW.DATEFIN ))
+	THEN
+		DBMS_OUTPUT.PUT_LINE('PERIODE VALIDE POUR L EMPLOYE :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+	
+	ELSE RAISE_APPLICATION_ERROR(-20002,'PERIODE INVALIDE POUR L EMPLOYE INTERVENANT :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+  END IF;
+  
+  ELSE
+  
+    SELECT * INTO INTER_ROW FROM INTERVENTIONS WHERE NUMINTERVENTION = :NEW.NUMINTERVENTION;
+  IF((INTER_ROW.DATEDEBINTERV <= :NEW.DATEDEBUT) AND (INTER_ROW.DATEFININTERV >= :NEW.DATEFIN ))
+	THEN
+		DBMS_OUTPUT.PUT_LINE('PERIODE VALIDE POUR L EMPLOYE :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+	
+	ELSE RAISE_APPLICATION_ERROR(-20002,'PERIODE INVALIDE POUR L EMPLOYE INTERVENANT :'||:NEW.NUMEMPLOYE ||'  POUR L INTERVENTION :'|| INTER_ROW.NUMINTERVENTION);
+  END IF;
+  
+  
+  END IF;
+
+END;
+/
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+\end{sql}
+
+\subsection{Tester le trigger}
+Pour pouvoir s'assurer que le trigger \texttt{CHECK\_PERIODE\_INTER} est fonctionnelle. on insert deux intervenant avec des périodes différentes (une valide et l'autre invalide)
+
+
+\subsubsection{Cas Invalide}
+\begin{sql}
+INSERT INTO INTERVENTIONS VALUES (60,8,'réparation systeme',to_date('2006-05-11 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-12 12:00:00','YYYY-MM-DD HH24:MI:SS' ),17846);
+
+1 row created.
+
+INSERT INTO INTERVENANT VALUES (60,54,to_date('2006-02-12 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-12 12:00:00','YYYY-MM-DD HH24:MI:SS' ));
+
+ERROR at line 1:
+ORA-20002: PERIODE INVALIDE POUR L EMPLOYE INTERVENANT :54  POUR L INTERVENTION
+:60
+ORA-06512: at "SYSTEM.CHECK_PERIODE_INTER", line 12
+ORA-04088: error during execution of trigger 'SYSTEM.CHECK_PERIODE_INTER'
+\end{sql}
+
+\subsubsection{Cas Valide}
+\begin{sql}
+INSERT INTO INTERVENTIONS VALUES (59,8,'réparation systeme',to_date('2006-05-12 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-12 12:00:00','YYYY-MM-DD HH24:MI:SS' ),17846);
+
+1 row created.
+
+INSERT INTO INTERVENANT VALUES (59,54,to_date('2006-05-12 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-05-12 12:00:00','YYYY-MM-DD HH24:MI:SS' ));
+
+PERIODE VALIDE POUR L EMPLOYE :54  POUR L INTERVENTION :59
+
+1 row created.
+\end{sql}
+
+Effectivement après l'insertion d'un intervenation avec une période qui ne correspond pas à l'intervention le trigger lance une exception
+
+\subsection{Création du trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER}}
+Afin que l'administrateur puisse connaitre le nombre total des interventions pour chaque employé. 
+Pour cela, nous ajoutons l'attribut \texttt{TOTAL\_INTERVENTIONS} dans la table employé.
+Puis nous créons le trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER} qui met à jour l’attribut \texttt{TOTAL\_ INTERVENTIONS}.
 
 
 \subsubsection{Requête}
 \begin{sql}
-ALTER TABLE EMPLOYE ADD (TOTAL_INTERVENTIONS INTEGER DEFAULT 0);
+ALTER TABLE EMPLOYE ADD (TOTAL_INTERVENTIONSINTEGER DEFAULT 0);
 \end{sql}
 
 \subsubsection{Résultat}
@@ -202,8 +286,8 @@ ALTER TABLE EMPLOYE ADD (TOTAL_INTERVENTIONS INTEGER DEFAULT 0);
 Table altered.
 \end{sql}
 
-le trigger suivant incrémente la valeur de l'attribut TOTAL\_INTERVENTIONS lorsqu'un employé participe a une nouvelle intervention,
-c'est à dire lorsque un element (tuple) est inséré dans la table INTERVENANT
+le trigger suivant incrémente la valeur de l'attribut \texttt{TOTAL\_INTERVENTIONS} lorsqu'un employé participe a une nouvelle intervention,
+c'est à dire lorsque un élément (tuple) est inséré dans la table \texttt{INTERVENANT}
 
 \subsubsection{Requête}
 \begin{sql}
@@ -224,7 +308,7 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester les triggers}
-Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} sont fonctionelles on va afficher le nomber d'intervention avant et après l'insertion d'une intervention d'un employé donné
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} est fonctionnelle on va afficher le nombre d'intervention avant et après l'insertion d'une intervention d'un employé donné
 
 
 \subsubsection{Requête}
@@ -248,4 +332,90 @@ TOTAL_INTERVENTIONS
 \end{sql}
 
 Effectivement après l'insertion le nombre totale d'intervention à été incrémenté
+
+\subsection{Création du trigger pour sauvegarder le total de gains de
+toutes les interventions}
+
+La suite de requêtes qui permet de répondre au besoin posé dans la question est */
+
+\begin{itemize}
+\item Création de la table \texttt{CHIFRE\ AFFAIRE} avec une requête \texttt{CREATE\ TABLE} 
+\item Compter le nombre de tuples pour la date (le moi et l'année) en question avec une  \texttt{SELECT}
+\item Si le nombre est nulle créer un nouveau tuple avec la requête \texttt{INSERT}
+\item Sinon mise à jour du nombre de gain actuelle avec la requête \texttt{UPDATE}
+\end{itemize}
+
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE TABLE CHIFFRE_AFFAIRE
+(
+	 MOIS INTEGER, 
+	 ANNEE INTEGER ,
+	 TOTAL_GAINS INTEGER,
+CONSTRAINT PK_CHIFFRE_AFFAIRE PRIMARY KEY (mois,annee)
+);
+
+CREATE OR REPLACE TRIGGER TRIGGER_GAINS 
+AFTER INSERT  ON INTERVENTIONS 
+FOR EACH ROW
+DECLARE 
+CURSOR CR IS SELECT * FROM CHIFFRE_AFFAIRE ;
+CR_GAIN CR%ROWTYPE;
+I BINARY_INTEGER;
+MOIS BINARY_INTEGER;
+ANNE BINARY_INTEGER;
+BEGIN
+I:=0;
+MOIS:=EXTRACT( MONTH FROM :NEW.DATEDEBINTERV );
+ANNE:=EXTRACT(YEAR FROM :NEW.DATEDEBINTERV);
+  FOR CR_GAIN IN CR LOOP
+  EXIT WHEN  CR%NOTFOUND;
+  
+  IF(CR_GAIN.MOIS = MOIS AND ANNE=CR_GAIN.ANNEE ) THEN
+  UPDATE CHIFFRE_AFFAIRE SET TOTAL_GAINS=(TOTAL_GAINS +:NEW.COUTINTERV)  WHERE(CR_GAIN.MOIS LIKE MOIS);
+  DBMS_OUTPUT.PUT_LINE('TOTAL_GAINS DU MOIS DE : '|| CR_GAIN.MOIS ||' A ETE INCREMENTE DE :'|| :NEW.COUTINTERV ); I:=5;
+  END IF;
+  END LOOP;
+  IF(I=0) THEN
+  INSERT INTO CHIFFRE_AFFAIRE VALUES(MOIS,TO_CHAR(:NEW.DATEDEBINTERV ,'YYYY'),:NEW.COUTINTERV);
+  DBMS_OUTPUT.PUT_LINE('UN NOUVEAU CHIFFRE_AFFAIRE A ETE AJOUTE ');
+  DBMS_OUTPUT.PUT_LINE('DATE : MOIS : '|| MOIS ||' ,ANNEE:' || TO_CHAR(:NEW.DATEDEBINTERV ,'YYYY')||' TOTAL GAIN :'|| :NEW.COUTINTERV );
+END IF;
+END;
+/
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+\end{sql}
+
+\subsection{Tester les triggers}
+
+\subsubsection{Requête}
+\begin{sql}
+SQL> INSERT INTO INTERVENTIONS VALUES (1000,3,'réparation',to_date('2006/02/25 0
+9:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006/02/26 12:00:00','YYYY-MM-DD HH2
+4:MI:SS'),30000);
+UN NOUVEAU CHIFFRE_AFFAIRE A ETE AJOUTE
+DATE : MOIS : 2 ,ANNEE:2006 TOTAL GAIN :30000
+1 row created.
+
+SQL> INSERT INTO INTERVENTIONS VALUES (2000,21,'réparation',to_date('2006-02-23
+09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-02-24 18:00:00','YYYY-MM-DD HH
+24:MI:SS' ),10000);
+TOTAL_GAINS DU MOIS DE : 2 A ETE INCREMENTE DE :10000
+1 row created.
+
+SQL> SELECT * FROM CHIFFRE_AFFAIRE;
+
+      MOIS      ANNEE TOTAL_GAINS
+---------- ---------- -----------
+         2       2006       80000
+         4       2006       42000
+         5       2006       10000
+\end{sql}
+
+Effectivement après l'insertion de quelques intervention on voit clairement la mise à jour de la table \texttt{CHIFFRE\_AFFAIRE}
 \end{document}
