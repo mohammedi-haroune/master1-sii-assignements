@@ -8,9 +8,9 @@
 \input{../../TP0/front_page}
 
 
-Avant de commencer à répondre aux questions demandées, il faut exécuter la commande \texttt{SERVEROUTPUT ON}, elle permet d'activer les affichages résultants de la fonction \texttt{dbms\_output.put\_line();} .
+Avant de commencer à répondre aux questions demandées, il faut exécuter la commande \texttt{SET SERVEROUTPUT ON}, elle permet d'activer les affichages résultants de la fonction \texttt{dbms\_output.put\_line();} .
 
-\subsection{Création d'un trigger qui affiche \texttt{"un nouveau client est ajouté"} après chaque insertion d’un client,
+\subsection{Création d'un trigger qui affiche \texttt{"un nouveau client est ajouté"} après chaque insertion d'un client,
 Répétez la même chose pour la modification ou la suppression.}
 Dans ce cas la, nous avons a sélectionner plusieurs lignes (tuples), donc nous utiliserons un curseur afin de parcourir les éléments sélectionnés un par un et puis les traiter.
 Aussi si la table \texttt{MARQUE} est vide, une exception doit être généré, affichant un message correspondant à l'erreur rencontrée.
@@ -55,7 +55,6 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester les trigger}
-d'abord activer les affichages avec la commande \texttt{SET SERVEROUTPUT ON}
 
 \subsubsection{Requête}
 \begin{sql}
@@ -86,7 +85,7 @@ un client est supprimé
 \end{sql}
 
 \subsection{Création du trigger qui afficher \texttt{"un nouveau modèle est ajouté à la marque [Nom de la marque]"}
-après chaque insertion d'un}
+après chaque insertion d'un modèle.}
 
 \begin{itemize}
 \item
@@ -141,6 +140,9 @@ un nouveau modele est ajoute a la marque peugeot
 1 row inserted.
 \end{sql}
 
+
+\subsection{Création d'un trigger qui vérifie que lors de la modification du salaire d’un employé, 
+la nouvelle valeur ne peut jamais être inférieure à la précédente.}
 %Question 3
 \begin{itemize}
 \item
@@ -189,8 +191,8 @@ Le trigger a arrêté le programme et invalidé la mise a jours, Il a ainsi prot
 %Question 4
 \subsection{Création du trigger pour vérifier la période des interventions}
 
-Pour pouvoir assurer que les période sont correct il faut déclaré un tirgger qui va être exécuté a chaque insertion ou mise à jour des dates (\texttt{DATEDEBUT},\texttt{DATEFIN})
-Ce trigger a pour but de comparer les valeur de dates en question avec les valeurs de l'intervention correspondante 
+Pour pouvoir s'assurer que les périodes sont correctes il faut déclarer un tirgger qui va être exécuté a chaque insertion ou mise à jour des dates (\texttt{DATEDEBUT},\texttt{DATEFIN})
+Ce trigger a pour but de comparer les valeurs des dates en questions avec les valeurs de l'intervention correspondante 
 et dans le cas où la période de l'intervention de l'employé n'est pas comprise entre la période de l'intervention correspondante une exception est levé
 a l'aide de la fonction \texttt{RAISE\_APPLICATION\_ERROR}
 
@@ -237,7 +239,7 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester le trigger}
-Pour pouvoir s'assurer que le trigger \texttt{CHECK\_PERIODE\_INTER} est fonctionnelle. on insert deux intervenant avec des périodes différentes (une valide et l'autre invalide)
+Pour pouvoir s'assurer que le trigger \texttt{CHECK\_PERIODE\_INTER} est fonctionnelle. on insert deux intervenants avec des périodes différentes (une valide et l'autre invalide)
 
 
 \subsubsection{Cas Invalide}
@@ -268,12 +270,12 @@ PERIODE VALIDE POUR L EMPLOYE :54  POUR L INTERVENTION :59
 1 row created.
 \end{sql}
 
-Effectivement après l'insertion d'un intervenation avec une période qui ne correspond pas à l'intervention le trigger lance une exception
+Effectivement après l'insertion d'une intervention avec une période qui ne correspond pas à l'intervention le trigger lance une exception.
 
-\subsection{Création du trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER}}
-Afin que l'administrateur puisse connaitre le nombre total des interventions pour chaque employé. 
+\subsection{Création du trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER} Afin que l'administrateur puisse connaitre le nombre total des interventions pour chaque employé.}
+ 
 Pour cela, nous ajoutons l'attribut \texttt{TOTAL\_INTERVENTIONS} dans la table employé.
-Puis nous créons le trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER} qui met à jour l’attribut \texttt{TOTAL\_ INTERVENTIONS}.
+Puis nous créons le trigger \texttt{TOTAL\_INTERVENTIONS\_TRIGGER} qui met à jour cet attribut \texttt{TOTAL\_ INTERVENTIONS}.
 
 
 \subsubsection{Requête}
@@ -353,7 +355,8 @@ CREATE TABLE CHIFFRE_AFFAIRE
 	 MOIS INTEGER, 
 	 ANNEE INTEGER ,
 	 TOTAL_GAINS INTEGER,
-CONSTRAINT PK_CHIFFRE_AFFAIRE PRIMARY KEY (mois,annee)
+CONSTRAINT PK_CHIFFRE_AFFAIRE PRIMARY KEY (mois,annee),
+CONSTRAINT CK_MOIS CHECK (Mois BETWEEN 1 AND 12)
 );
 
 CREATE OR REPLACE TRIGGER TRIGGER_GAINS 
@@ -393,20 +396,25 @@ Trigger created.
 
 \subsection{Tester les triggers}
 
-\subsubsection{Requête}
+\subsubsection{Requête et Résultat}
 \begin{sql}
 SQL> INSERT INTO INTERVENTIONS VALUES (1000,3,'réparation',to_date('2006/02/25 0
 9:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006/02/26 12:00:00','YYYY-MM-DD HH2
 4:MI:SS'),30000);
+
 UN NOUVEAU CHIFFRE_AFFAIRE A ETE AJOUTE
 DATE : MOIS : 2 ,ANNEE:2006 TOTAL GAIN :30000
+
 1 row created.
 
 SQL> INSERT INTO INTERVENTIONS VALUES (2000,21,'réparation',to_date('2006-02-23
 09:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2006-02-24 18:00:00','YYYY-MM-DD HH
 24:MI:SS' ),10000);
+
 TOTAL_GAINS DU MOIS DE : 2 A ETE INCREMENTE DE :10000
+
 1 row created.
+
 
 SQL> SELECT * FROM CHIFFRE_AFFAIRE;
 
@@ -417,5 +425,5 @@ SQL> SELECT * FROM CHIFFRE_AFFAIRE;
          5       2006       10000
 \end{sql}
 
-Effectivement après l'insertion de quelques intervention on voit clairement la mise à jour de la table \texttt{CHIFFRE\_AFFAIRE}
+Effectivement après l'insertion de quelques interventions on voit clairement la mise à jour de la table \texttt{CHIFFRE\_AFFAIRE}
 \end{document}
