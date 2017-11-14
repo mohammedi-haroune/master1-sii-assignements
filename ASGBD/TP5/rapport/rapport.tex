@@ -147,8 +147,8 @@ un nouveau modele est ajoute a la marque peugeot
 Le \texttt{BEFORE} permet de remettre en cause la mise a jours contenu dans le trigger
 \item
 Pour cela l'on doit arreter la modification avant son exécution , donc utiliser le \texttt{BEFORE}
-puis l'on compare la nouvelle valeur du \texttt{SALAIRE} que l'on souhaite mettre (\texttt{NEW}) avec l'ancienne existante (\texttt{OLD})
-et l'on génére une interruption (erreur) avec la fonction \texttt{raise_application_error} pour empecher la modification dans le cas ou
+puis l'on compare la nouvelle valeur du \texttt{SALAIRE} que l'on souhaite mettre "\texttt{NEW}" avec l'ancienne existante "\texttt{OLD}"
+et l'on génère une interruption (erreur) avec la fonction \texttt{raise\_application\_error} pour empecher la modification dans le cas ou
 \texttt{NEW < OLD}
 \end{itemize}
 
@@ -170,7 +170,7 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester les triggers}
-Pour pouvoir s'assurer que le trigger \texttt{UPDATE_SALAIRE} sont fonctionelles on va insérer un tuple qui génère une exception
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} sont fonctionelles on va insérer un tuple qui génère une exception
 \subsubsection{Requête}
 \begin{sql}
 UPDATE EMPLOYE SET SALAIRE = SALAIRE - 100 WHERE NUMEMPLOYE = 53 ;
@@ -188,8 +188,8 @@ Le trigger a arreté le programme et invalidé la mise a jours, Il a ainsi prot�
 
 \subsection{QUESTION 5}
 Afin que l’administrateur puisse connaitre le nombre total des interventions pour chaque employé. 
-Pour cela, nous ajoutons l'attribut TOTAL_INTERVENTIONS dans la table employé.
-Puis nous créons le trigger TOTAL_INTERVENTIONS_TRIGGER qui met à jour l’attribut TOTAL_ INTERVENTIONS.
+Pour cela, nous ajoutons l'attribut TOTAL\_INTERVENTIONS dans la table employé.
+Puis nous créons le trigger TOTAL\_INTERVENTIONS\_TRIGGER qui met à jour l’attribut TOTAL\_INTERVENTIONS.
 
 
 \subsubsection{Requête}
@@ -202,7 +202,7 @@ ALTER TABLE EMPLOYE ADD (TOTAL_INTERVENTIONS INTEGER DEFAULT 0);
 Table altered.
 \end{sql}
 
-le trigger suivant incrémente la valeur de l'attribut TOTAL_INTERVENTIONS lorsqu'un employé participe a une nouvelle intervention,
+le trigger suivant incrémente la valeur de l'attribut TOTAL\_INTERVENTIONS lorsqu'un employé participe a une nouvelle intervention,
 c'est à dire lorsque un element (tuple) est inséré dans la table INTERVENANT
 
 \subsubsection{Requête}
@@ -224,7 +224,7 @@ Trigger created.
 \end{sql}
 
 \subsection{Tester les triggers}
-Pour pouvoir s'assurer que le trigger \texttt{UPDATE_SALAIRE} sont fonctionelles on va afficher le nomber d'intervention avant et après l'insertion d'une intervention d'un employé donné
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE\_SALAIRE} sont fonctionelles on va afficher le nomber d'intervention avant et après l'insertion d'une intervention d'un employé donné
 
 
 \subsubsection{Requête}
