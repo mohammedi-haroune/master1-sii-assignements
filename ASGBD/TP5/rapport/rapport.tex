@@ -1,0 +1,255 @@
+\documentclass[•]{article}
+
+\usepackage{../../TP0/style}
+
+\begin{document}
+\def\reportnumber{5}
+\def\reporttitle{TRIGGERS}
+\input{../../TP0/front_page}
+
+
+Avant de commencer à répondre aux questions demandées, il faut exécuter la commande \texttt{SERVEROUTPUT ON}, elle permet d'activer les affichages résultants de la fonction \texttt{dbms\_output.put\_line();} .
+
+\subsection{Création d'un trigger qui affiche \texttt{"un nouveau client est ajouté"} après chaque insertion d’un client,
+Répétez la même chose pour la modification ou la suppression.}
+Dans ce cas la, nous avons a sélectionner plusieurs lignes (tuples), donc nous utiliserons un curseur afin de parcourir les éléments sélectionnés un par un et puis les traiter.
+Aussi si la table \texttt{MARQUE} est vide, une exception doit être généré, affichant un message correspondant à l'erreur rencontrée.
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE OR REPLACE TRIGGER INSERT_CLIENT 
+AFTER INSERT ON CLIENT 
+FOR EACH ROW
+BEGIN
+	dbms_output.put_line('un nouveau client est ajouté');
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER UPDATE_CLIENT 
+AFTER UPDATE ON CLIENT 
+FOR EACH ROW
+BEGIN
+	dbms_output.put_line('Les informations d un client sont mises a jours');
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER DELETE_CLIENT 
+AFTER DELETE ON CLIENT 
+FOR EACH ROW
+BEGIN
+	dbms_output.put_line('un client est supprimé');
+END;
+/
+\end{sql}
+
+Ainsi chaque ligne affichée en sortie donne le nom de la marque ainsi que le nombre de modèles qu'elle possède.
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+
+Trigger created.
+
+Trigger created.
+\end{sql}
+
+\subsection{Tester les trigger}
+d'abord activer les affichages avec la commande \texttt{SET SERVEROUTPUT ON}
+
+\subsubsection{Requête}
+\begin{sql}
+/** l'insertion **/
+INSERT INTO CLIENT 
+VALUES(40,'MME','Adjaout','feriel',to_date('21/01/1995', 'DD/MM/YYYY'),'cite 2110 logts bt 5 alger','0561381877','0565568716','');
+
+/** la modification **/
+UPDATE CLIENT 
+SET PRENOMCLIENT = 'ADJAOUTE' 
+WHERE NUMCLIENT = 40 ;
+
+/** la suppression **/
+DELETE FROM CLIENT 
+WHERE NUMCLIENT = 40 ;
+
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+un nouveau client est ajouté
+1 row created.
+
+Les informations d un client sont mises a jours
+1 row updated.
+
+un client est supprimé
+1 row deleted.
+\end{sql}
+
+\subsection{Création du trigger qui afficher \texttt{"un nouveau modèle est ajouté à la marque [Nom de la marque]"}
+après chaque insertion d'un}
+
+\begin{itemize}
+\item
+La clause \texttt{INTO} dans la requête \texttt{SELECT} nous permet de recupérer la 
+valeur de l'attribut en question dans une variable
+\item
+Le tuple spécial \texttt{:NEW} générer par le SGBD dans le corps les triggers des insertions 
+sauvgarde le tuple qui viens d'être inserer dans la base
+\item
+En utilisant les concepts \texttt{INTO} et \texttt{:NEW}, on écrit la requete qui récupère la marque du modèle en question
+\end{itemize}
+
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE OR REPLACE TRIGGER NOUVEAU_MODELE
+AFTER INSERT ON MODELE
+FOR EACH ROW
+DECLARE 
+NOM_MARQUE MARQUE.MARQUE%TYPE;
+NUM MARQUE.NUMMARQUE%TYPE;
+
+BEGIN
+    NUM := :NEW.NUMMARQUE ;
+
+	SELECT MARQUE INTO NOM_MARQUE
+	FROM MARQUE WHERE NUMMARQUE = NUM;
+
+	DBMS_OUTPUT.PUT_LINE('un nouveau modèle est ajouté à la marque' || NOM_MARQUE);
+END;
+/
+\end{sql}
+
+
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+\end{sql}
+
+
+\subsection{Tester les triggers}
+Pour pouvoir s'assurer que le trigger \texttt{NOUVEAU_MODELE} sont fonctionelles on va insérer un tuple dans la table modèle
+\subsubsection{Requête}
+\begin{sql}
+INSERT INTO MODELE VALUES (99,15,'504');
+\end{sql}
+
+
+\subsubsection{Résultat}
+\begin{sql}
+un nouveau modèle est ajouté à la marque peugeot
+1 row inserted.
+\end{sql}
+
+%Question 3
+\begin{itemize}
+\item
+Le \texttt{BEFORE} permet de remettre en cause la mise a jours contenu dans le trigger
+\item
+Pour cela l'on doit arreter la modification avant son exécution , donc utiliser le \texttt{BEFORE}
+puis l'on compare la nouvelle valeur du \texttt{SALAIRE} que l'on souhaite mettre (\texttt{NEW}) avec l'ancienne existante (\texttt{OLD})
+et l'on génére une interruption (erreur) avec la fonction \texttt{raise_application_error} pour empecher la modification dans le cas ou
+\texttt{NEW < OLD}
+\end{itemize}
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE OR REPLACE TRIGGER UPDATE_SALAIRE
+BEFORE UPDATE OF SALAIRE ON EMPLOYE 
+FOR EACH ROW
+BEGIN
+	IF :NEW.SALAIRE < :OLD.SALAIRE
+	THEN raise_application_error(-20001, 'Le nouveau salaire ne doit pas etre inférieure a l`ancien!') ;
+	END IF;
+END;
+/ 
+\end{sql}
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+\end{sql}
+
+\subsection{Tester les triggers}
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE_SALAIRE} sont fonctionelles on va insérer un tuple qui génère une exception
+\subsubsection{Requête}
+\begin{sql}
+UPDATE EMPLOYE SET SALAIRE = SALAIRE - 100 WHERE NUMEMPLOYE = 53 ;
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+ERROR at line 1:
+ORA-20001: Le nouveau salaire ne doit pas etre inférieure a l`ancien!
+ORA-06512: at "SYSTEM.UPDATE_SALAIRE", line 3
+ORA-04088: error during execution of trigger 'SYSTEM.UPDATE_SALAIRE'
+\end{sql}
+
+Le trigger a arreté le programme et invalidé la mise a jours, Il a ainsi protégé l'integrité de la base de données
+
+\subsection{QUESTION 5}
+Afin que l’administrateur puisse connaitre le nombre total des interventions pour chaque employé. 
+Pour cela, nous ajoutons l'attribut TOTAL_INTERVENTIONS dans la table employé.
+Puis nous créons le trigger TOTAL_INTERVENTIONS_TRIGGER qui met à jour l’attribut TOTAL_ INTERVENTIONS.
+
+
+\subsubsection{Requête}
+\begin{sql}
+ALTER TABLE EMPLOYE ADD (TOTAL_INTERVENTIONS INTEGER DEFAULT 0);
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+Table altered.
+\end{sql}
+
+le trigger suivant incrémente la valeur de l'attribut TOTAL_INTERVENTIONS lorsqu'un employé participe a une nouvelle intervention,
+c'est à dire lorsque un element (tuple) est inséré dans la table INTERVENANT
+
+\subsubsection{Requête}
+\begin{sql}
+CREATE OR REPLACE TRIGGER TOTAL_INTERVENTIONS_TRIGGER
+AFTER INSERT ON INTERVENANT
+FOR EACH ROW
+BEGIN
+	UPDATE EMPLOYE E
+	SET TOTAL_INTERVENTIONS = TOTAL_INTERVENTIONS + 1 
+	WHERE E.NUMEMPLOYE = :NEW.NUMEMPLOYE ;
+END;
+/
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+Trigger created.
+\end{sql}
+
+\subsection{Tester les triggers}
+Pour pouvoir s'assurer que le trigger \texttt{UPDATE_SALAIRE} sont fonctionelles on va afficher le nomber d'intervention avant et après l'insertion d'une intervention d'un employé donné
+
+
+\subsubsection{Requête}
+\begin{sql}
+SELECT TOTAL_INTERVENTIONS FROM EMPLOYE WHERE NUMEMPLOYE = 53;
+INSERT INTO INTERVENANT VALUES (1,53,to_date('2017-01-27 08:00:00','YYYY-MM-DD HH24:MI:SS' ),to_date('2017-02-09 14:00:00','YYYY-MM-DD HH24:MI:SS' ));
+SELECT TOTAL_INTERVENTIONS FROM EMPLOYE WHERE NUMEMPLOYE = 53;
+\end{sql}
+
+\subsubsection{Résultat}
+\begin{sql}
+TOTAL_INTERVENTIONS
+-------------------
+                  0
+
+1 row created.
+
+TOTAL_INTERVENTIONS
+-------------------
+                  1
+\end{sql}
+
+Effectivement après l'insertion le nombre totale d'intervention à été incrémenté
+
+
+
+
+\end{document}

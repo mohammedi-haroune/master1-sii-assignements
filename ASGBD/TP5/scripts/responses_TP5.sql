@@ -80,6 +80,35 @@ un client est supprimé
 
 /***********************************************************************************************************************************/
 /** 2 **/
+/* 
+Création du trigger qui afficher <<un nouveau modèle est ajouté à la marque [Nom de la marque]>>
+après chaque insertion d'un modèle 
+
+la clause INTO dans la requête SELECT nous permet de recupérer la 
+valeur de l'attribut en question dans une variable
+
+le tuple spécial :NEW générer par le SGBD dans le corps les triggers des insertions 
+sauvgarde le tuple qui viens d'être inserer dans la base
+
+en utilisant les concepts INTO et :NEW, on écrit la requete qui récupère la marque du modèle en question
+*/
+
+CREATE OR REPLACE TRIGGER NOUVEAU_MODELE
+AFTER INSERT ON MODELE
+FOR EACH ROW
+DECLARE 
+NOM_MARQUE MARQUE.MARQUE%TYPE;
+NUM MARQUE.NUMMARQUE%TYPE;
+
+BEGIN
+    NUM := :NEW.NUMMARQUE ;
+
+	SELECT MARQUE INTO NOM_MARQUE
+	FROM MARQUE WHERE NUMMARQUE = NUM;
+
+	DBMS_OUTPUT.PUT_LINE('un nouveau modèle est ajouté à la marque [ '||NOM_MARQUE||' ]');
+END;
+/
 
 /***********************************************************************************************************************************/
 /** 3 **/
@@ -186,6 +215,9 @@ TOTAL_INTERVENTIONS
 
 /***********************************************************************************************************************************/
 /** 6 **/
+/*Création de la table CHIFRE AFFAIRE */
+
+
 
 
 
