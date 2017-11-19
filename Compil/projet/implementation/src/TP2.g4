@@ -8,27 +8,47 @@ instructions
 '}';
 
 declarations
-           :    type ID (',' ID)* ';' declarations?
+           :    type variables ';' declarations?
            ;
+variables:  ID (',' ID)*;
 
 type : 'intcompil' | 'floatcompil';
 
 instructions
-           :    (ID '=' expression ';' | if) instructions?
+           :    instAff ';' instructions?
+           |    instIf ';' instructions?
+           |    instScan ';' instructions?
+           |    instPrint';' instructions?
+           |    instFor';' instructions?
+           |    instWhile';' instructions?
+           |    instCase';' instructions?
            ;
 
-if: 'if' '(' condition ')' 'then' instructions ('else' instructions 'endif' ';')? ;
+instAff:    ID '=' expression;
 
-condition: expression ('>'|'<') expression ;
+instIf: 'if' '(' condition ')' 'then' instructions ('else' instructions 'endif' ';')? ;
+
+instScan : 'scancompil' '(' variables ')' ;
+instPrint : 'printcompil' '(' (variables | TEXT) ')' ;
+instFor : 'for' '('instAff ';' condition ';' instAff ')' '{' instructions '}' ;
+instWhile : 'while' '('condition')' '{' instructions '}' ;
+instCase : ID 'match' '{' cases '}' ;
+
+cases : 'case' value '=>' instructions 'break' ';' cases? ;
+
+condition : expression ('>'|'<') expression ;
 
 expression
          :  expression ('*'|'/') expression
          |  expression ('+'|'-') expression
          |  '(' expression ')'
-         |  INT
-         |  FLOAT
-         |  ID
+         |  value
          ;
+
+value :     INT
+      |     FLOAT
+      |     ID
+      ;
 
 //Lexicale
 
@@ -43,6 +63,8 @@ FLOAT
 INT :   '0' | [1-9] [0-9]* ; // no leading zeros
 
 COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
+
+TEXT : '"' (~'"'|'\\"')* '"'  ;
 
 WS : [ \t\n\r]+ -> channel(HIDDEN) ;
 
