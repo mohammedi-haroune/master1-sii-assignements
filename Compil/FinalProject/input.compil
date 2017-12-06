@@ -1,0 +1,9 @@
+compil Proj () {
+intCompil x, y;
+floatCompil z, x;
+start
+z = x;
+x = 5 * 2 + 1) * 5;
+y = 6;
+printcompil(x);
+}
