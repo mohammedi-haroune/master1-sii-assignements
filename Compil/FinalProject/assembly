@@ -1,0 +1,15 @@
+MOV AX, 6
+MOV x, AX
+MOV AX, 5
+MUL AX, 2
+MOV Temp1, AX
+MOV AX, 1
+MUL AX, 5
+MOV Temp2, AX
+MOV AX, Temp1
+ADD AX, Temp2
+MOV Temp3, AX
+MOV AX, Temp3
+MOV x, AX
+MOV AX, 6
+MOV y, AX

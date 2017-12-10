@@ -17,16 +17,16 @@ import java.util.Iterator;
 
 public class ConstumTestRig {
 
-    public static void process(TestConfig config, ArrayList<TP2BaseListener> listeners, ANTLRErrorListener errorListeners) throws Exception {
+    public static void process(TestConfig config, ArrayList<TP2BaseListener> listeners, ANTLRErrorListener errorListener) throws Exception {
 
 
         TP2Lexer lexer = new TP2Lexer(null);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         TP2Parser parser = new TP2Parser(tokens);
         parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        parser.addErrorListener(errorListener);
 
         for (TP2BaseListener listener : listeners) parser.addParseListener(listener);
-        parser.addErrorListener(errorListeners);
 
         Charset charset = config.encoding == null ? Charset.defaultCharset() : Charset.forName(config.encoding);
         if (config.inputFiles.size() == 0) {

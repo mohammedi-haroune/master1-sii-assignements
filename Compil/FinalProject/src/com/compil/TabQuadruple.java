@@ -1,5 +1,10 @@
 package com.compil;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TabQuadruple
@@ -15,6 +20,17 @@ public class TabQuadruple
         quads.add(quad);
         return quads.size()-1;
     }
+
+    public ArrayList<String> toAssembly() {
+        ArrayList<String> assembly = new ArrayList<>();
+        for (Quadruple q:quads) assembly.addAll(q.toAssembler());
+        return assembly;
+    }
+
+    public void saveAssembly(String filename) throws IOException {
+        Files.write(Paths.get(filename), toAssembly());
+    }
+
 
     public Quadruple getQuad(int index)
     {
@@ -36,5 +52,7 @@ public class TabQuadruple
         }
         System.out.println("**************************************************************");
     }
+
+
 
 }
