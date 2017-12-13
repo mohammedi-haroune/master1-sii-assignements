@@ -23,7 +23,6 @@ public class TinyLanguage {
 
         ErrorListener errorListener = new ErrorListener(errors);
 
-
         ConstumTestRig.process(config, routines, errorListener);
 
 
