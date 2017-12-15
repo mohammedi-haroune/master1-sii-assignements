@@ -3,6 +3,7 @@ package com.compil;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+
 public class Quadruple {
     String Quad[];
     private String op;
@@ -30,7 +31,7 @@ public class Quadruple {
         Quad[index] = s;
     }
 
-    public ArrayList<String> toAssembler() {
+    public ArrayList<String> toAssembler(int i) {
         String op = Quad[0];
         String op1 = Quad[1];
         String op2 = Quad[2];
@@ -41,15 +42,21 @@ public class Quadruple {
             case "-":
             case "*":
             case "/":
-                return AssemblerInstruction.op(op, op1, op2, temp);
+                return AssemblerInstruction.op(i ,op, op1, op2, temp);
             case "=":
-                return AssemblerInstruction.aff(temp, op1);
+                return AssemblerInstruction.aff(i ,temp, op1);
             case "BR":
+                return AssemblerInstruction.jump(i ,op,  op1, op2, temp);
             case "BGE":
             case "BLE":
-                return AssemblerInstruction.jump(op, op1, op2, temp);
+                return AssemblerInstruction.jump(i ,op, op1, op2, temp);
+            case "Final":
+                ArrayList<String> assembly = new ArrayList<>();
+                assembly.add("etiq"+i+": ");
+                return assembly;
 
         }
+
         return new ArrayList<>();
     }
 
@@ -58,13 +65,23 @@ public class Quadruple {
         return "(" + Quad[0] + "," + Quad[1] + "," + Quad[2] + "," + Quad[3] + ")";
     }
 
-    private static class AssemblerInstruction {
+    public static class AssemblerInstruction {
         public static String AX = "AX";
+        public static String BX = "BX";
+        public static String JLE = "JLE";
+        public static String JGE = "JGE";
+        public static String JMP = "JMP";
 
 
-        public static ArrayList<String> op(String op, String op1, String op2, String result) {
+        public static ArrayList<String> op(int i, String op, String op1, String op2, String result) {
             ArrayList<String> assembly = new ArrayList<>();
+            if(RoutinesQuad.etiq.contains(i)){
+                assembly.add("etiq"+i+": ");
+            }
+
             assembly.add(mov(AX, op1));
+
+
             switch (op) {
                 case "+": assembly.add(add(AX, op2));break;
                 case "-": assembly.add(sub(AX, op2));break;
@@ -75,18 +92,51 @@ public class Quadruple {
             return assembly;
         }
 
-        public static ArrayList<String> aff(String target, String source) {
+        public static ArrayList<String> aff(int i ,String target, String source) {
             ArrayList<String> assembly = new ArrayList<>();
+            if(RoutinesQuad.etiq.contains(i)){
+                assembly.add("etiq"+i+": ");
+            }
+
             assembly.add(mov(AX, source));
+
+
             assembly.add(mov(target, AX));
             return assembly;
         }
 
-        public static ArrayList<String> jump(String op, String op1, String op2, String result) {
+        public static ArrayList<String> jump(int i , String op, String op1, String op2, String result) {
             ArrayList<String> assembly = new ArrayList<>();
+            switch (op) {
+                case "BR": if(RoutinesQuad.etiq.contains(i)){
+                    assembly.add("etiq"+i+": ");
+                }
+                    assembly.add(jmp(JMP, op1));
+
+                break;
+
+                case "BLE": if(RoutinesQuad.etiq.contains(i)){
+                    assembly.add("etiq"+i+": ");
+                }
+                    assembly.add(mov(AX, op1));
+                    assembly.add(mov(BX, op2));
+                    assembly.add(cmp(op1, op2));
+                    assembly.add(jmp(JLE, result));
+
+                break;
+
+                case "BGE": if(RoutinesQuad.etiq.contains(i)){
+                    assembly.add("etiq"+i+": ");
+                }
+
+                    assembly.add(mov(AX, op1));
+                    assembly.add(mov(BX, op2));
+                    assembly.add(cmp(op1, op2));
+                    assembly.add(jmp(JGE, result));
+                break;
+            }
             return assembly;
         }
-
 
         private static String mov(String op1, String op2) {
             return "MOV " + op1 + ", " + op2;
@@ -102,6 +152,12 @@ public class Quadruple {
         }
         private static String mult(String op1, String op2) {
             return "MUL " + op1 + ", " + op2;
+        }
+        private static String cmp(String op1, String op2) {
+            return "CMP " + op1 + ", " + op2;
+        }
+        private static String jmp(String op, String op1) {
+            return op +" etiq"+ op1 ;
         }
 
     }

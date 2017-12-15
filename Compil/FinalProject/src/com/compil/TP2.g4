@@ -18,17 +18,17 @@ type : INTcompil | FLOATcompil;
 
 instructions
            :    instAff ';' instructions?
-           |    instIf ';' instructions?
+           |    instIf instructions?
            |    instScan ';' instructions?
            |    instPrint';' instructions?
-           |    instFor';' instructions?
-           |    instWhile';' instructions?
-           |    instCase';' instructions?
+           |    instFor instructions?
+           |    instWhile instructions?
+           |    instCase instructions?
            ;
 
 instAff:    identifier '=' expression;
 
-instIf: IF '(' condition ')' THEN instructions (ELSE instructions ENDIF ';')? ;
+instIf: IF '(' condition ')' THEN instructions (instElse instructions ENDIF ';')? ;
 instElse : ELSE;
 
 instScan : SCANcompil '(' variables ')' ;

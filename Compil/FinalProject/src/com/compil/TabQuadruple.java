@@ -23,7 +23,11 @@ public class TabQuadruple
 
     public ArrayList<String> toAssembly() {
         ArrayList<String> assembly = new ArrayList<>();
-        for (Quadruple q:quads) assembly.addAll(q.toAssembler());
+        int i =0;
+        for (Quadruple q:quads){
+            assembly.addAll(q.toAssembler(i));
+            i++;
+        }
         return assembly;
     }
 
@@ -44,7 +48,8 @@ public class TabQuadruple
 
     public void display()
     {
-        addQuad("END","","","");
+        addQuad("Final","Quad","","");
+
         System.out.println("Our Quadruples : ");
         System.out.println("**************************************************************");
         for (int i = 0; i < size(); i++) {

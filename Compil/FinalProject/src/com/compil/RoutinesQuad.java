@@ -1,6 +1,7 @@
 package com.compil;
 
 import java.util.LinkedList;
+import java.util.Vector;
 
 
 public class RoutinesQuad extends TP2BaseListener {
@@ -9,6 +10,7 @@ public class RoutinesQuad extends TP2BaseListener {
         private LinkedList<String> stack = new LinkedList<>();
         private TabQuadruple quads = new TabQuadruple();
         private int cptTemps = 0;
+        public static Vector<Integer> etiq = new Vector<>();
 
         public TabQuadruple getQuads() {
             return quads;
@@ -75,7 +77,7 @@ public class RoutinesQuad extends TP2BaseListener {
 
 
 
-        int saveCondition;
+        int saveCondition , saveEND;
         @Override public void exitCondition(TP2Parser.ConditionContext ctx)
         {
             //System.out.println("exitComp start: " +" head of stack is " + stack.getLast());
@@ -88,17 +90,22 @@ public class RoutinesQuad extends TP2BaseListener {
 
 
 
+
         @Override public void exitInstElse(TP2Parser.InstElseContext ctx)
         {
             quads.getQuad(saveCondition).set(3,""+(quads.size()+1));
+            etiq.add(quads.size()+1);
             saveCondition = quads.addQuad("BR","","","");
+
         }
 
 
 
         @Override public void exitInstIf(TP2Parser.InstIfContext ctx)
         {
-            quads.getQuad(saveCondition).set(3,""+quads.size());
+            quads.getQuad(saveCondition).set(1,""+quads.size());
+            etiq.add(quads.size());
+
         }
 
 
