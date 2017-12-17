@@ -13,3 +13,14 @@ MOV AX, Temp3
 MOV x, AX
 MOV AX, 6
 MOV y, AX
+MOV AX, x
+MOV BX, y
+CMP x, y
+JLE etiq9
+MOV AX, y
+MOV x, AX
+JMP etiq10
+etiq9: 
+MOV AX, x
+MOV y, AX
+etiq10: 

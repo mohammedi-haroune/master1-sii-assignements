@@ -5,5 +5,7 @@ start
 x = 6;
 x = 5 * 2 + 1 * 5;
 y = 6;
+if (x > y) then x = y;
+else y = x; endif;
 printcompil(x);
 }
